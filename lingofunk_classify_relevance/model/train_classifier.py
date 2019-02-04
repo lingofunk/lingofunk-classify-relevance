@@ -142,16 +142,20 @@ def train():
     logger.info(f"Loading data: {DATA_FILE}")
     train = pd.read_csv(DATA_FILE)
 
-    features = train["comment_text"].fillna("# #").values
+    features_0 = train["comment_0"].fillna("# #").values
+    features_1 = train["comment_1"].fillna("# #").values
     # target = convert_binary_toxic(train, config.classes)
-    target = train[config.classes]
+    # target = train[config.classes]
+    target = train["label"]
     del train
     gc.collect()
 
     logger.info(f"Transforming data")
     preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
-    preprocessor.fit_texts(list(features))
-    features = preprocessor.transform_texts(features)
+    preprocessor.fit_texts(list(features_0))
+    preprocessor.fit_texts(list(features_1))
+    features_0 = preprocessor.transform_texts(features_0)
+    features_1 = preprocessor.transform_texts(features_1)
     word_index = preprocessor.tokenizer.word_index
 
     PRERPOCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor.pkl")
@@ -170,7 +174,7 @@ def train():
 
     logger.info(f"Model training, train size: {TRAIN_SIZE}")
     X_train, X_val, y_train, y_val = train_test_split(
-        features, target, train_size=TRAIN_SIZE, random_state=233
+        [features_0, features_1], target, train_size=TRAIN_SIZE, random_state=233
     )
     RocAuc = RocAucEvaluation(
         log_dir=LOG_PATH,
