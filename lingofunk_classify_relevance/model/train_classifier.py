@@ -23,7 +23,6 @@ from keras.preprocessing import text, sequence
 from keras.callbacks import TensorBoard
 
 from .utils import get_logger, get_root
-from lingofunk_classify_relevance import config
 
 np.random.seed(42)
 warnings.filterwarnings("ignore")
@@ -184,7 +183,7 @@ def train():
     )
 
     model = get_model(
-        MAXLEN, MAX_FEATURES, EMBED_SIZE, embedding_matrix, len(config.classes)
+        MAXLEN, MAX_FEATURES, EMBED_SIZE, embedding_matrix, 1
     )
 
     hist = model.fit(

@@ -2,7 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="13d2616c-69b5-4e17-ae08-d8d642b6e6c7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lingofunk_classify_relevance/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lingofunk_classify_relevance/assets/model/identity_hate_1.combined.hd5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lingofunk_classify_relevance/assets/model/insult_1.combined.hd5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lingofunk_classify_relevance/assets/model/obscene_1.combined.hd5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lingofunk_classify_relevance/assets/model/severe_toxic_1.combined.hd5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lingofunk_classify_relevance/assets/model/threat_1.combined.hd5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lingofunk_classify_relevance/assets/model/threat_1.test.hd5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lingofunk_classify_relevance/assets/model/toxic_1.combined.hd5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lingofunk_classify_relevance/config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lingofunk_classify_relevance/model/download.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lingofunk_classify_relevance/model/generate_data.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/lingofunk_classify_relevance/model/train_classifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/lingofunk_classify_relevance/model/train_classifier.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lingofunk_classify_relevance/templates/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_sample.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tox.ini" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,8 +35,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/model/yelp_json_2_csv.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="410">
-              <caret line="61" column="24" lean-forward="true" selection-start-line="61" selection-start-column="24" selection-end-line="61" selection-end-column="24" />
+            <state relative-caret-position="795">
+              <caret line="53" column="30" lean-forward="true" selection-start-line="53" selection-start-column="30" selection-end-line="53" selection-end-column="30" />
               <folding>
                 <element signature="e#24#33#0" expanded="true" />
               </folding>
@@ -30,11 +47,32 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/model/train_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="174" column="60" lean-forward="true" selection-start-line="174" selection-start-column="60" selection-end-line="174" selection-end-column="60" />
+            <state relative-caret-position="230">
+              <caret line="174" column="54" lean-forward="true" selection-start-line="174" selection-start-column="54" selection-end-line="174" selection-end-column="54" />
               <folding>
                 <element signature="e#135#144#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/model/predict.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="360">
+              <caret line="24" selection-start-line="24" selection-end-line="24" />
+              <folding>
+                <element signature="e#93#102#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/model/utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="4" column="4" lean-forward="true" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -65,6 +103,7 @@
         <option value="$PROJECT_DIR$/lingofunk_classify_relevance/model/generate_data.py" />
         <option value="$PROJECT_DIR$/lingofunk_classify_relevance/model/predict.py" />
         <option value="$PROJECT_DIR$/lingofunk_classify_relevance/model/yelp_json_2_csv.py" />
+        <option value="$PROJECT_DIR$/lingofunk_classify_relevance/config.py" />
         <option value="$PROJECT_DIR$/lingofunk_classify_relevance/model/train_classifier.py" />
       </list>
     </option>
@@ -187,18 +226,18 @@
       <workItem from="1549273043390" duration="8139000" />
       <workItem from="1549283314634" duration="1359000" />
       <workItem from="1549284941306" duration="1023000" />
-      <workItem from="1549288565196" duration="3857000" />
+      <workItem from="1549288565196" duration="4611000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="20336000" />
+    <option name="totallyTimeSpent" value="21090000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19347706" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25815368" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -266,6 +305,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/model/download.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#414#423#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/assets/data/restaurants.csv">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/model/predict.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
@@ -276,42 +327,53 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/model/generate_data.py">
+    <entry file="file://$PROJECT_DIR$/tests/test_sample.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="19" column="41" selection-start-line="19" selection-start-column="41" selection-end-line="19" selection-end-column="41" />
+        <state relative-caret-position="335">
+          <caret line="85" column="19" lean-forward="true" selection-start-line="85" selection-start-column="19" selection-end-line="85" selection-end-column="19" />
           <folding>
-            <element signature="e#24#33#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/model/download.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#414#423#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
+    <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/config.py">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/model/yelp_json_2_csv.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="410">
-          <caret line="61" column="24" lean-forward="true" selection-start-line="61" selection-start-column="24" selection-end-line="61" selection-end-column="24" />
+        <state relative-caret-position="795">
+          <caret line="53" column="30" lean-forward="true" selection-start-line="53" selection-start-column="30" selection-end-line="53" selection-end-column="30" />
           <folding>
             <element signature="e#24#33#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/assets/data/restaurants.csv">
-      <provider selected="true" editor-type-id="text-editor" />
+    <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/model/generate_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="26" selection-start-line="19" selection-start-column="26" selection-end-line="19" selection-end-column="26" />
+          <folding>
+            <element signature="e#24#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/model/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="4" lean-forward="true" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lingofunk_classify_relevance/model/train_classifier.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="174" column="60" lean-forward="true" selection-start-line="174" selection-start-column="60" selection-end-line="174" selection-end-column="60" />
+        <state relative-caret-position="230">
+          <caret line="174" column="54" lean-forward="true" selection-start-line="174" selection-start-column="54" selection-end-line="174" selection-end-column="54" />
           <folding>
             <element signature="e#135#144#0" expanded="true" />
           </folding>
