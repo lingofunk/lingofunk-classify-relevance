@@ -33,7 +33,7 @@ DIR_ASSETS = os.path.join(DIR_ROOT, "assets")
 MODEL_PATH = os.path.join(DIR_ASSETS, "model")
 LOG_PATH = os.path.join(DIR_ASSETS, "tb_logs")
 EMBEDDING_FILE = os.path.join(
-    DIR_ASSETS, "embedding", "fasttext-crawl-300d-2m", "crawl-300d-2M.vec"
+    DIR_ASSETS, "embedding", "glove.840B.300d.txt"
 )
 DATA_FILE = os.path.join(DIR_ASSETS, "data", "train.csv")
 
@@ -43,12 +43,6 @@ EMBED_SIZE = 300
 TRAIN_SIZE = 0.95
 BATCH_SIZE = 32
 EPOCHS = 2
-
-
-def convert_binary_toxic(data, classes):
-    target = data[classes].values != np.zeros((len(data), 1))
-    binary = target.any(axis=1)
-    return binary
 
 
 class Preprocess(object):
