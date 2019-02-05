@@ -4,6 +4,8 @@
 
 import os
 
+from train_classifier_attn import *
+
 from utils import get_root, load_pipeline_stages
 from train_classifier import Preprocess  # for unpickling to work properly
 
@@ -20,12 +22,13 @@ class PredictionPipeline(object):
         self.preprocessor = preprocessor
         self.model = model
 
-    def get_features(self, sent):
-        return self.preprocessor.transform_texts(sent)
-
     def predict(self, sent):
-        features = self.get_features(sent)
-        return self.model.predict(features)
+        features_0 = sent[0]
+        features_1 = sent[1]
+        features_0 = self.preprocessor.transform_texts(features_0)
+        features_1 = self.preprocessor.transform_texts(features_1)
+
+        return self.model.predict([features_0, features_1])
 
 
 def load_pipeline():
@@ -37,9 +40,8 @@ def load_pipeline():
 if __name__ == "__main__":
     ppl = load_pipeline()
 
-    sample_text = [["nice food, mc Donald's is the best", "mc Donald's is the best restaurant I've ever seen!"],
-                   ["Beef was very tasty", "It's a great restaurant for vegans!"],
-                   ["Awful car service!", "Go go Arsenal!"]]
+    sample_text = [["nice food, mc Donald's is the best", "Beef was very tasty", "Awful car service!"],
+                   ["mc Donald's is the best restaurant I've ever seen!", "It's a great restaurant for vegans!", "Go go Arsenal!"]]
 
-    for text, relevance in zip(sample_text, ppl.predict(sample_text)):
-        print(f"{text}".ljust(25) + f"- Relevance: {relevance}")
+    print(f"Relevance: {ppl.predict(sample_text)}")
+

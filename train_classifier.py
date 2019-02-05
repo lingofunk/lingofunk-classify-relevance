@@ -13,6 +13,8 @@ import warnings
 import numpy as np
 import pandas as pd
 
+from bpemb import BPEmb
+
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score
 
@@ -32,16 +34,13 @@ DIR_ROOT = get_root()
 DIR_ASSETS = os.path.join(DIR_ROOT, "assets")
 MODEL_PATH = os.path.join(DIR_ASSETS, "model")
 LOG_PATH = os.path.join(DIR_ASSETS, "tb_logs")
-EMBEDDING_FILE = os.path.join(
-    DIR_ASSETS, "embedding", "glove.840B.300d.txt"
-)
 DATA_FILE = os.path.join(DIR_ASSETS, "data", "train.csv")
 
-MAX_FEATURES = 30000
+MAX_FEATURES = 100000
 MAXLEN = 100
 EMBED_SIZE = 300
-TRAIN_SIZE = 0.95
-BATCH_SIZE = 32
+TRAIN_SIZE = 0.90
+BATCH_SIZE = 1024
 EPOCHS = 2
 
 
@@ -60,23 +59,19 @@ class Preprocess(object):
         return features
 
 
-def get_embeddings(embed_file, word_index, max_features, embed_size):
-    def get_coefs(word, *arr):
-        return word, np.asarray(arr, dtype="float32")
+def get_embeddings(word_index, max_features, embed_size):
+    assert embed_size in [25, 50, 100, 200, 300]  # default sizes of embeddings in BPEmb
+    bpemb_en = BPEmb(lang="en", dim=embed_size)
+    embedding_matrix = np.zeros((max_features, embed_size))
+    in_voc_words = 0
 
-    embeddings_pretrained = dict(
-        get_coefs(*o.rstrip().rsplit(" "))
-        for o in open(embed_file, encoding="utf8", errors="ignore")
-    )
-
-    nb_words = min(max_features, len(word_index))
-    embedding_matrix = np.zeros((nb_words, embed_size))
     for word, i in word_index.items():
         if i >= max_features:
-            continue
-        embedding_vector = embeddings_pretrained.get(word)
-        if embedding_vector is not None:
-            embedding_matrix[i] = embedding_vector
+            break
+        in_voc_words += 1
+        embedding_matrix[i] = np.sum(bpemb_en.embed(word), axis=0)
+
+    print(f"{in_voc_words} words in vocabulary found out of {max_features} total.")
 
     return embedding_matrix
 
@@ -135,10 +130,10 @@ def train():
     logger.info(f"Loading data: {DATA_FILE}")
     train = pd.read_csv(DATA_FILE)
 
+    print("Started training.")
+
     features_0 = train["comment_0"].fillna("# #").values
     features_1 = train["comment_1"].fillna("# #").values
-    # target = convert_binary_toxic(train, config.classes)
-    # target = train[config.classes]
     target = train["label"]
     del train
     gc.collect()
@@ -159,20 +154,20 @@ def train():
     del preprocessor
     gc.collect()
 
-    logger.info(f"Loading embedding vectors: {EMBEDDING_FILE}")
+    logger.info("Opened preprocessing file.")
     embedding_matrix = get_embeddings(
-        EMBEDDING_FILE, word_index, MAX_FEATURES, EMBED_SIZE
+        word_index, MAX_FEATURES, EMBED_SIZE
     )
     # embedding_matrix = np.zeros((MAX_FEATURES, EMBED_SIZE))  # For quickly testing the validity of the graph
 
     logger.info(f"Model training, train size: {TRAIN_SIZE}")
-    X_train, X_val, y_train, y_val = train_test_split(
-        [features_0, features_1], target, train_size=TRAIN_SIZE, random_state=233
+    features_0_train, features_0_val, features_1_train, features_1_val, y_train, y_val = train_test_split(
+        features_0, features_1, target, train_size=TRAIN_SIZE, random_state=233
     )
     RocAuc = RocAucEvaluation(
         log_dir=LOG_PATH,
         batch_size=BATCH_SIZE,
-        validation_data=(X_val, y_val),
+        validation_data=([features_0_val, features_1_val], y_val),
         interval=1,
     )
 
@@ -180,12 +175,14 @@ def train():
         MAXLEN, MAX_FEATURES, EMBED_SIZE, embedding_matrix, 1
     )
 
+    logger.info("Model created.")
+
     hist = model.fit(
-        X_train,
+        [features_0_train, features_1_train],
         y_train,
         batch_size=BATCH_SIZE,
         epochs=EPOCHS,
-        validation_data=(X_val, y_val),
+        validation_data=([features_0_val, features_1_val], y_val),
         callbacks=[RocAuc],
         verbose=1,
     )
@@ -201,6 +198,8 @@ def train():
     logger.info(f"Saving the weights: {WEIGHTS_FILE}")
 
     model.save_weights(WEIGHTS_FILE)
+
+    logger.info("Model saved.")
 
 
 if __name__ == "__main__":

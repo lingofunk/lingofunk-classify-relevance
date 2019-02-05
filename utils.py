@@ -3,8 +3,9 @@
 import logging
 from pathlib import Path
 import pickle
-
+from Attention import Attention
 from keras.models import model_from_json
+from keras.utils import CustomObjectScope
 
 
 def get_root():
@@ -37,8 +38,8 @@ def load_model(architecture_file, weights_file):
 
 
 def load_pipeline_stages(preprocessor_file, architecture_file, weights_file):
-    from . import train_classifier
-    from .train_classifier import Preprocess  # for unpickling to work properly
+    # from train_classifier import Preprocess  # for unpickling to work properly
     preprocessor = pickle.load(open(preprocessor_file, 'rb'))
-    model = load_model(architecture_file, weights_file)
-    return preprocessor, model
+    with CustomObjectScope({'Attention': Attention}):
+        model = load_model(architecture_file, weights_file)
+        return preprocessor, model
