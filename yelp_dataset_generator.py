@@ -45,6 +45,7 @@ def generate_data():
 
     for i in range(n_restaurants):
         with open(os.path.join(DATA_DIR, "restaurant_reviews_pairs.csv"), 'a') as f:
+            writer = csv.writer(f)
             n_comments = len(restaurant_reviews[i])
             if i % 100 == 0:
                 print(f' restaurant # {i}')
