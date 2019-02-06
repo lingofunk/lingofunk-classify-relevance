@@ -23,16 +23,21 @@ def split_data(test_size=0.25):
     del data_train, data_test
 
 
+import gc, sys
+
+
 def generate_data():
     def compute_similarity(vector_1, vector_2):
         return cosine(vector_1, vector_2)
 
     preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
     restaurant_reviews = pd.read_csv(PATH_TO_YELP_CSV)
-    preprocessor.fit_texts(restaurant_reviews["text"])
     restaurant_reviews = restaurant_reviews.groupby(["business_id"]).agg({"text": list})["text"].values
+
     n_comments_total = sum(len(restaurant) for restaurant in restaurant_reviews)
     n_restaurants = len(restaurant_reviews)
+
+    preprocessor.fit_texts([restaurant_reviews[i] for i in range(n_restaurants)])
 
     print("n_restaurants: ", n_restaurants)
     print("n_comments_total", n_comments_total)
@@ -41,16 +46,24 @@ def generate_data():
 
     fields = ["comment_0", "comment_1", "label"]
 
+    for size, o in sorted([(sys.getsizeof(o), o) for o in gc.get_objects()], key=lambda p: p[0], reverse=True)[:1]:
+        print(size, str(o)[:50])
+        print()
+
     with open(os.path.join(DATA_DIR, "restaurant_reviews_pairs.csv"), 'w') as f:
         writer = csv.writer(f)
         writer.writerow(fields)
 
-    def iteration(i):
+    for i in range(n_restaurants):
         with open(os.path.join(DATA_DIR, "restaurant_reviews_pairs.csv"), 'a') as f:
             writer = csv.writer(f)
             n_comments = len(restaurant_reviews[i])
             if i % 100 == 0:
                 print(f' restaurant # {i}')
+                for size, o in sorted([(sys.getsizeof(o), o) for o in gc.get_objects()], key=lambda p: p[0],
+                                      reverse=True)[:5]:
+                    print(size, str(o)[:50])
+                    print()
             probs = lens_restaurants / (n_comments_total - n_comments)
             probs[i] = 0
             # 1
@@ -85,11 +98,6 @@ def generate_data():
                 _, comment_0_ind, comment_1_ind = negative_pairs[k]
                 writer.writerow([restaurant_reviews[i][comment_0_ind], negative_examples[comment_1_ind], 0])
             del negative_pairs, negative_examples, restaurant_comment_embeddings, negative_comment_embeddings
-
-    pool = Pool(4)
-    pool.map(iteration, range(0, n_restaurants))
-    pool.close()
-    pool.join()
 
 
 if __name__ == "__main__":
