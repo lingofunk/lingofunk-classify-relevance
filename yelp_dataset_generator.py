@@ -1,9 +1,6 @@
 #! /usr/bin/env python
 
 from scipy.spatial.distance import cosine
-import csv
-from multiprocessing.pool import Pool
-
 from train_classifier import *
 
 DIR_ROOT = get_root()
@@ -14,98 +11,89 @@ PATH_TO_YELP_CSV = os.path.join(DATA_DIR, "restaurant_reviews.csv")
 np.random.seed(42)
 
 
-def split_data(test_size=0.25):
-    data = pd.read_csv(os.path.join(DATA_DIR, "restaurant_reviews_pairs.csv"))
-    data_train, data_test = train_test_split(data, random_state=42, test_size=test_size)
-    del data
-    data_train.to_csv(os.path.join(DATA_DIR, "rel-train.csv"))
-    data_test.to_csv(os.path.join(DATA_DIR, "rel-test.csv"))
-    del data_train, data_test
+class BatchGenerator:
+    def __init__(self, batch_size=128, number_of_batches=None):
+        self.preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
+        self.restaurant_reviews = pd.read_csv(PATH_TO_YELP_CSV)
+        self.restaurant_reviews = self.restaurant_reviews.groupby(["business_id"]).agg({"text": list})["text"].values
+        self.n_comments_total = sum(len(restaurant) for restaurant in self.restaurant_reviews)
+        self.n_restaurants = len(self.restaurant_reviews)
+        self.lens_restaurants = np.array(list(map(len, self.restaurant_reviews)))
+        self.fields = ["comment_0", "comment_1", "label"]
+        self.batch_size = batch_size
+        if number_of_batches is None:
+            self.number_of_batches = np.ceil(self.n_restaurants / batch_size)
 
+        for i in range(self.n_restaurants):
+            self.preprocessor.fit_texts(self.restaurant_reviews[i])
 
-import gc, sys
-from memory_profiler import profile
+    @staticmethod
+    def compute_similarity(self, vec1, vec2):
+        return cosine(vec1, vec2)
 
-@profile
-def generate_data():
-    def compute_similarity(vector_1, vector_2):
-        return cosine(vector_1, vector_2)
+    def __generate__(self, process_target=True):
+        counter = 0
+        while True:
+            y_batch = []
+            idx_start = self.batch_size * counter
+            idx_end = self.batch_size * (counter + 1)
+            x_batch = []
+            for i in range(idx_start, min(idx_end, self.n_restaurants)):
+                n_comments = len(self.restaurant_reviews[i])
+                probs = self.lens_restaurants / (self.n_comments_total - n_comments)
+                probs[i] = 0
 
-    preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
-    restaurant_reviews = pd.read_csv(PATH_TO_YELP_CSV)
-    restaurant_reviews = restaurant_reviews.groupby(["business_id"]).agg({"text": list})["text"].values
+                # 1
+                n_positive_examples = np.random.random_integers(2, max(3, n_comments // 10))
+                positive_examples = np.random.random_integers(n_comments, size=(n_positive_examples, 2))
+                for pe in positive_examples:
+                    x_batch.append([self.restaurant_reviews[pe[0]][0], self.restaurant_reviews[pe[1]][0]])
+                del positive_examples
 
-    n_comments_total = sum(len(restaurant) for restaurant in restaurant_reviews)
-    n_restaurants = len(restaurant_reviews)
+                # 0
+                n_negative_examples = 3 * np.random.random_integers(2, max(3, n_comments // 10))
+                negative_restaurants = np.random.choice(self.n_restaurants, n_negative_examples, p=probs)
+                negative_examples = []
+                for restaurant in negative_restaurants:
+                    negative_examples.extend(np.random.choice(self.restaurant_reviews[restaurant]))
+                del negative_restaurants
+                restaurant_comment_embeddings = self.preprocessor.transform_texts(self.restaurant_reviews[i])
+                negative_comment_embeddings = self.preprocessor.transform_texts(negative_examples)
 
-    for i in range(n_restaurants):
-        preprocessor.fit_texts(restaurant_reviews[i])
-        if i % 100 == 0:
-            print(f' restaurant # {i}')
-        if i > 200:
-            break
+                negative_pairs = []
 
-    print("n_restaurants: ", n_restaurants)
-    print("n_comments_total", n_comments_total)
+                for j in range(n_negative_examples):
+                    comment_0_ind = np.random.randint(0, n_comments)
+                    negative_pairs.append((self.compute_similarity(restaurant_comment_embeddings[comment_0_ind],
+                                                              negative_comment_embeddings[j]),
+                                           comment_0_ind, j))
+                negative_pairs.sort()
+                kk = n_negative_examples // 3
+                for k in range(kk):
+                    _, comment_0_ind, comment_1_ind = negative_pairs[k]
+                    x_batch.append([self.restaurant_reviews[i][comment_0_ind], negative_examples[comment_1_ind]])
+                for k in range(2 * kk, n_negative_examples):
+                    _, comment_0_ind, comment_1_ind = negative_pairs[k]
+                    x_batch.append([self.restaurant_reviews[i][comment_0_ind], negative_examples[comment_1_ind]])
+                y_batch.append([0] * (n_negative_examples - kk))
 
-    lens_restaurants = np.array(list(map(len, restaurant_reviews)))
+                del negative_pairs, negative_examples, restaurant_comment_embeddings, negative_comment_embeddings
+                gc.collect()
+                gc.collect()
+                gc.collect()
+                gc.collect()
 
-    fields = ["comment_0", "comment_1", "label"]
+                counter += 1
+                if process_target:
+                    y_batch = [1] * n_positive_examples + [0] * (n_negative_examples - kk)
+                    yield x_batch, y_batch
+                else:
+                    yield x_batch
 
-    # for size, o in sorted([(sys.getsizeof(o), o) for o in gc.get_objects()], key=lambda p: p[0], reverse=True)[:1]:
-    #   print(size, str(o)[:50])
-    #     print()
+                if process_target:
+                    yield x_batch, y_batch
+                else:
+                    yield x_batch
 
-    with open(os.path.join(DATA_DIR, "restaurant_reviews_pairs.csv"), 'w') as f:
-        writer = csv.writer(f)
-        writer.writerow(fields)
-
-    for i in range(n_restaurants):
-        if i > 200:
-            break
-        with open(os.path.join(DATA_DIR, "restaurant_reviews_pairs.csv"), 'a') as f:
-            writer = csv.writer(f)
-            n_comments = len(restaurant_reviews[i])
-            if i % 100 == 0:
-                print(f' restaurant # {i}')
-            probs = lens_restaurants / (n_comments_total - n_comments)
-            probs[i] = 0
-            # 1
-            n_positive_examples = np.random.random_integers(2, max(3, n_comments // 10))
-            positive_examples = np.random.random_integers(n_comments, size=(n_positive_examples, 2))
-            for pe in positive_examples:
-                comment_0 = restaurant_reviews[pe[0]][0]
-                comment_1 = restaurant_reviews[pe[1]][0]
-                writer.writerow([comment_0, comment_1, 1])
-            del positive_examples
-
-            # 0
-            n_negative_examples = 3 * np.random.random_integers(2, max(3, n_comments // 10))
-            negative_restaurants = np.random.choice(n_restaurants, n_negative_examples, p=probs)
-            negative_examples = []
-            for restaurant in negative_restaurants:
-                negative_examples.extend(np.random.choice(restaurant_reviews[restaurant]))
-            del negative_restaurants
-            restaurant_comment_embeddings = preprocessor.transform_texts(restaurant_reviews[i])
-            negative_comment_embeddings = preprocessor.transform_texts(negative_examples)
-
-            negative_pairs = []
-
-            for j in range(n_negative_examples):
-                comment_0_ind = np.random.randint(0, n_comments)
-                negative_pairs.append((compute_similarity(restaurant_comment_embeddings[comment_0_ind],
-                                                          negative_comment_embeddings[j]),
-                                       comment_0_ind, j))
-            negative_pairs.sort()
-            for k in range(n_negative_examples // 3):
-                _, comment_0_ind, comment_1_ind = negative_pairs[k]
-                writer.writerow([restaurant_reviews[i][comment_0_ind], negative_examples[comment_1_ind], 0])
-            for k in range(2 * n_negative_examples // 3, n_negative_examples):
-                _, comment_0_ind, comment_1_ind = negative_pairs[k]
-                writer.writerow([restaurant_reviews[i][comment_0_ind], negative_examples[comment_1_ind], 0])
-            del negative_pairs, negative_examples, restaurant_comment_embeddings, negative_comment_embeddings
-            gc.collect()
-
-
-if __name__ == "__main__":
-    generate_data()
+                if counter == self.number_of_batches:
+                    counter = 0
