@@ -30,7 +30,7 @@ DIR_ROOT = get_root()
 DIR_ASSETS = os.path.join(DIR_ROOT, "assets")
 MODEL_PATH = os.path.join(DIR_ASSETS, "model")
 LOG_PATH = os.path.join(DIR_ASSETS, "tb_logs")
-DATA_FILE = os.path.join(DIR_ASSETS, "data", "train.csv")
+DATA_FILE = os.path.join(DIR_ROOT, "yelp-data", "rel-train.csv")
 
 MAX_SEQUENCE_LENGTH = 150
 MAX_NB_WORDS = 100000
@@ -43,7 +43,7 @@ VALIDATION_SPLIT = 0.1
 TRAIN_SIZE = 1 - VALIDATION_SPLIT
 MAX_FEATURES = 30000
 BATCH_SIZE = 1024
-EPOCHS = 2
+EPOCHS = 5
 act = "relu"
 
 

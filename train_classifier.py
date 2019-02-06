@@ -34,7 +34,7 @@ DIR_ROOT = get_root()
 DIR_ASSETS = os.path.join(DIR_ROOT, "assets")
 MODEL_PATH = os.path.join(DIR_ASSETS, "model")
 LOG_PATH = os.path.join(DIR_ASSETS, "tb_logs")
-DATA_FILE = os.path.join(DIR_ASSETS, "data", "train.csv")
+DATA_FILE = os.path.join(DIR_ROOT, "yelp-data", "rel-train.csv")
 
 MAX_FEATURES = 100000
 MAXLEN = 100
