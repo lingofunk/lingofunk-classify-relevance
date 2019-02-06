@@ -2,6 +2,7 @@
 
 from scipy.spatial.distance import cosine
 import csv
+from multiprocessing.pool import Pool
 
 from train_classifier import *
 
@@ -43,7 +44,7 @@ def generate_data():
         writer = csv.writer(f)
         writer.writerow(fields)
 
-    for i in range(n_restaurants):
+    def iteration(i):
         with open(os.path.join(DATA_DIR, "restaurant_reviews_pairs.csv"), 'a') as f:
             writer = csv.writer(f)
             n_comments = len(restaurant_reviews[i])
@@ -85,6 +86,11 @@ def generate_data():
                 _, comment_0_ind, comment_1_ind = negative_pairs[k]
                 writer.writerow([restaurant_reviews[i][comment_0_ind], negative_examples[comment_1_ind], 0])
             del negative_pairs, negative_examples
+
+    pool = Pool(4)
+    pool.map(iteration, range(0, n_restaurants))
+    pool.close()
+    pool.join()
 
 
 if __name__ == "__main__":
