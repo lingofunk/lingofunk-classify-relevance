@@ -24,8 +24,9 @@ def split_data(test_size=0.25):
 
 
 import gc, sys
+from memory_profiler import profile
 
-
+@profile
 def generate_data():
     def compute_similarity(vector_1, vector_2):
         return cosine(vector_1, vector_2)
