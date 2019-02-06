@@ -56,6 +56,8 @@ def generate_data():
         writer.writerow(fields)
 
     for i in range(n_restaurants):
+        if i > 200:
+            break
         with open(os.path.join(DATA_DIR, "restaurant_reviews_pairs.csv"), 'a') as f:
             writer = csv.writer(f)
             n_comments = len(restaurant_reviews[i])
