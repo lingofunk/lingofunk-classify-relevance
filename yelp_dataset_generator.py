@@ -59,11 +59,12 @@ def generate_data():
                 comment_1 = restaurant_reviews[pe[1]][0]
                 writer.writerow([comment_0, comment_1, 1])
             del positive_examples
-            # print(f"{n_positive_examples} positive examples generated.")
+
             # 0
             n_negative_examples = 3 * np.random.random_integers(2, min(3, n_comments // 10))
             negative_restaurants = np.random.choice(n_restaurants, n_negative_examples, p=probs)
             negative_examples = [np.random.choice(restaurant_reviews[restaurant]) for restaurant in negative_restaurants]
+            del negative_restaurants
             preprocessor.fit_texts(restaurant_reviews[i])
             restaurant_comment_embeddings = preprocessor.transform_texts(restaurant_reviews[i])
             preprocessor.fit_texts(negative_examples)
