@@ -42,6 +42,8 @@ def generate_data():
         preprocessor.fit_texts(restaurant_reviews[i])
         if i % 100 == 0:
             print(f' restaurant # {i}')
+        if i > 200:
+            break
 
     print("n_restaurants: ", n_restaurants)
     print("n_comments_total", n_comments_total)
