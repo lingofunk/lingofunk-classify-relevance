@@ -43,9 +43,10 @@ def generate_data():
         writer = csv.writer(f)
         writer.writerow(fields)
 
-        for i in range(n_restaurants):
+    for i in range(n_restaurants):
+        with open(os.path.join(DATA_DIR, "restaurant_reviews_pairs.csv"), 'a') as f:
             n_comments = len(restaurant_reviews[i])
-            if i % 1000 == 1:
+            if i % 100 == 0:
                 print(f' restaurant # {i}')
             probs = lens_restaurants / (n_comments_total - n_comments)
             probs[i] = 0
