@@ -77,7 +77,6 @@ def generate_data():
                 negative_pairs.append((compute_similarity(restaurant_comment_embeddings[comment_0_ind],
                                                           negative_comment_embeddings[j]),
                                        comment_0_ind, j))
-            del negative_examples
             negative_pairs.sort()
             for k in range(n_negative_examples // 3):
                 _, comment_0_ind, comment_1_ind = negative_pairs[k]
@@ -85,7 +84,7 @@ def generate_data():
             for k in range(2 * n_negative_examples // 3, n_negative_examples):
                 _, comment_0_ind, comment_1_ind = negative_pairs[k]
                 writer.writerow([restaurant_reviews[i][comment_0_ind], negative_examples[comment_1_ind], 0])
-            del negative_pairs
+            del negative_pairs, negative_examples
 
 
 if __name__ == "__main__":
