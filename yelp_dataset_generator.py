@@ -38,7 +38,8 @@ def generate_data():
     n_comments_total = sum(len(restaurant) for restaurant in restaurant_reviews)
     n_restaurants = len(restaurant_reviews)
 
-    preprocessor.fit_texts([restaurant_reviews[i] for i in range(n_restaurants)])
+    for i in range(n_restaurants):
+        preprocessor.fit_texts(restaurant_reviews[i])
 
     print("n_restaurants: ", n_restaurants)
     print("n_comments_total", n_comments_total)
@@ -77,7 +78,9 @@ def generate_data():
             # 0
             n_negative_examples = 3 * np.random.random_integers(2, max(3, n_comments // 10))
             negative_restaurants = np.random.choice(n_restaurants, n_negative_examples, p=probs)
-            negative_examples = [np.random.choice(restaurant_reviews[restaurant]) for restaurant in negative_restaurants]
+            negative_examples = []
+            for restaurant in negative_restaurants:
+                negative_examples.extend(np.random.choice(restaurant_reviews[restaurant]))
             del negative_restaurants
             restaurant_comment_embeddings = preprocessor.transform_texts(restaurant_reviews[i])
             negative_comment_embeddings = preprocessor.transform_texts(negative_examples)
