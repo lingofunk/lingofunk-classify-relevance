@@ -46,9 +46,9 @@ def generate_data():
 
     fields = ["comment_0", "comment_1", "label"]
 
-    for size, o in sorted([(sys.getsizeof(o), o) for o in gc.get_objects()], key=lambda p: p[0], reverse=True)[:1]:
-        print(size, str(o)[:50])
-        print()
+    # for size, o in sorted([(sys.getsizeof(o), o) for o in gc.get_objects()], key=lambda p: p[0], reverse=True)[:1]:
+    #   print(size, str(o)[:50])
+    #     print()
 
     with open(os.path.join(DATA_DIR, "restaurant_reviews_pairs.csv"), 'w') as f:
         writer = csv.writer(f)
@@ -60,10 +60,6 @@ def generate_data():
             n_comments = len(restaurant_reviews[i])
             if i % 100 == 0:
                 print(f' restaurant # {i}')
-                for size, o in sorted([(sys.getsizeof(o), o) for o in gc.get_objects()], key=lambda p: p[0],
-                                      reverse=True)[:5]:
-                    print(size, str(o)[:50])
-                    print()
             probs = lens_restaurants / (n_comments_total - n_comments)
             probs[i] = 0
             # 1
