@@ -121,7 +121,7 @@ def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, 
              recurrent_dropout=rate_drop_lstm,
              return_sequences=True)(embedded_sequences)
     x = Dropout(rate_drop_dense)(x)
-    merged = Attention(maxlen)(x)
+    merged = Attention()(x)
     merged = Dense(DENSE_SIZE, activation=act)(merged)
     merged = Dropout(rate_drop_dense)(merged)
     merged = BatchNormalization()(merged)

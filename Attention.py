@@ -4,8 +4,7 @@ from keras import initializers, regularizers, constraints
 
 
 class Attention(Layer):
-    def __init__(self, step_dim=0,
-                 W_regularizer=None, b_regularizer=None,
+    def __init__(self, W_regularizer=None, b_regularizer=None,
                  W_constraint=None, b_constraint=None,
                  bias=True, **kwargs):
         """
@@ -23,6 +22,7 @@ class Attention(Layer):
             model.add(LSTM(64, return_sequences=True))
             model.add(Attention())
         """
+        super(Attention, self).__init__(**kwargs)
         self.supports_masking = True
         # self.init = initializations.get('glorot_uniform')
         self.init = initializers.get('glorot_uniform')
@@ -34,9 +34,8 @@ class Attention(Layer):
         self.b_constraint = constraints.get(b_constraint)
 
         self.bias = bias
-        self.step_dim = step_dim
-        self.features_dim = 0
-        super(Attention, self).__init__(**kwargs)
+        self.step_dim = None
+        self.features_dim = None
 
     def build(self, input_shape):
         assert len(input_shape) == 3
@@ -47,6 +46,7 @@ class Attention(Layer):
                                  regularizer=self.W_regularizer,
                                  constraint=self.W_constraint)
         self.features_dim = input_shape[-1]
+        self.step_dim = input_shape[1]
 
         if self.bias:
             self.b = self.add_weight((input_shape[1],),
@@ -65,9 +65,6 @@ class Attention(Layer):
 
     def call(self, x, mask=None):
         # eij = K.dot(x, self.W) TF backend doesn't support it
-
-        # features_dim = self.W.shape[0]
-        # step_dim = x._keras_shape[1]
 
         features_dim = self.features_dim
         step_dim = self.step_dim
