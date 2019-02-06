@@ -52,7 +52,7 @@ def generate_data():
             probs = lens_restaurants / (n_comments_total - n_comments)
             probs[i] = 0
             # 1
-            n_positive_examples = np.random.random_integers(2, min(3, n_comments // 10))
+            n_positive_examples = np.random.random_integers(2, max(3, n_comments // 10))
             positive_examples = np.random.random_integers(n_comments, size=(n_positive_examples, 2))
             for pe in positive_examples:
                 comment_0 = restaurant_reviews[pe[0]][0]
@@ -61,7 +61,7 @@ def generate_data():
             del positive_examples
 
             # 0
-            n_negative_examples = 3 * np.random.random_integers(2, min(3, n_comments // 10))
+            n_negative_examples = 3 * np.random.random_integers(2, max(3, n_comments // 10))
             negative_restaurants = np.random.choice(n_restaurants, n_negative_examples, p=probs)
             negative_examples = [np.random.choice(restaurant_reviews[restaurant]) for restaurant in negative_restaurants]
             del negative_restaurants
