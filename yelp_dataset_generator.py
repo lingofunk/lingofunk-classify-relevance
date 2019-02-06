@@ -29,6 +29,7 @@ def generate_data():
 
     preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
     restaurant_reviews = pd.read_csv(PATH_TO_YELP_CSV)
+    preprocessor.fit_texts(restaurant_reviews["text"])
     restaurant_reviews = restaurant_reviews.groupby(["business_id"]).agg({"text": list})["text"].values
     n_comments_total = sum(len(restaurant) for restaurant in restaurant_reviews)
     n_restaurants = len(restaurant_reviews)
@@ -66,9 +67,7 @@ def generate_data():
             negative_restaurants = np.random.choice(n_restaurants, n_negative_examples, p=probs)
             negative_examples = [np.random.choice(restaurant_reviews[restaurant]) for restaurant in negative_restaurants]
             del negative_restaurants
-            preprocessor.fit_texts(restaurant_reviews[i])
             restaurant_comment_embeddings = preprocessor.transform_texts(restaurant_reviews[i])
-            preprocessor.fit_texts(negative_examples)
             negative_comment_embeddings = preprocessor.transform_texts(negative_examples)
 
             negative_pairs = []
@@ -85,7 +84,7 @@ def generate_data():
             for k in range(2 * n_negative_examples // 3, n_negative_examples):
                 _, comment_0_ind, comment_1_ind = negative_pairs[k]
                 writer.writerow([restaurant_reviews[i][comment_0_ind], negative_examples[comment_1_ind], 0])
-            del negative_pairs, negative_examples
+            del negative_pairs, negative_examples, restaurant_comment_embeddings, negative_comment_embeddings
 
     pool = Pool(4)
     pool.map(iteration, range(0, n_restaurants))
