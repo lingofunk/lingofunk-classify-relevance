@@ -52,15 +52,16 @@ def generate_data():
             probs = lens_restaurants / (n_comments_total - n_comments)
             probs[i] = 0
             # 1
-            n_positive_examples = np.random.random_integers(2, 2 * n_comments)
+            n_positive_examples = np.random.random_integers(2, min(3, n_comments // 10))
             positive_examples = np.random.random_integers(n_comments, size=(n_positive_examples, 2))
             for pe in positive_examples:
                 comment_0 = restaurant_reviews[pe[0]][0]
                 comment_1 = restaurant_reviews[pe[1]][0]
                 writer.writerow([comment_0, comment_1, 1])
+            del positive_examples
             # print(f"{n_positive_examples} positive examples generated.")
             # 0
-            n_negative_examples = 3 * np.random.random_integers(2, 2 * n_comments)
+            n_negative_examples = 3 * np.random.random_integers(2, min(3, n_comments // 10))
             negative_restaurants = np.random.choice(n_restaurants, n_negative_examples, p=probs)
             negative_examples = [np.random.choice(restaurant_reviews[restaurant]) for restaurant in negative_restaurants]
             preprocessor.fit_texts(restaurant_reviews[i])
@@ -75,7 +76,7 @@ def generate_data():
                 negative_pairs.append((compute_similarity(restaurant_comment_embeddings[comment_0_ind],
                                                           negative_comment_embeddings[j]),
                                        comment_0_ind, j))
-
+            del negative_examples
             negative_pairs.sort()
             for k in range(n_negative_examples // 3):
                 _, comment_0_ind, comment_1_ind = negative_pairs[k]
@@ -83,8 +84,7 @@ def generate_data():
             for k in range(2 * n_negative_examples // 3, n_negative_examples):
                 _, comment_0_ind, comment_1_ind = negative_pairs[k]
                 writer.writerow([restaurant_reviews[i][comment_0_ind], negative_examples[comment_1_ind], 0])
-
-            # print(f"{n_negative_examples} negative examples generated.")
+            del negative_pairs
 
 
 if __name__ == "__main__":
