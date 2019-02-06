@@ -94,6 +94,7 @@ def generate_data():
                 _, comment_0_ind, comment_1_ind = negative_pairs[k]
                 writer.writerow([restaurant_reviews[i][comment_0_ind], negative_examples[comment_1_ind], 0])
             del negative_pairs, negative_examples, restaurant_comment_embeddings, negative_comment_embeddings
+            gc.collect()
 
 
 if __name__ == "__main__":
