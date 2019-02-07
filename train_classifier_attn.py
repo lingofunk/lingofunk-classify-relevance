@@ -82,8 +82,9 @@ class RocAucEvaluation(TensorBoard):
 def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, embed_size, embedding_matrix):
     input_1 = Input(shape=(maxlen,))
     input_2 = Input(shape=(maxlen,))
-    embedding_layer_1 = Embedding(max_features, embed_size, weights=[embedding_matrix])(input_1)
-    embedding_layer_2 = Embedding(max_features, embed_size, weights=[embedding_matrix])(input_2)
+    emb_layer = Embedding(max_features, embed_size, weights=[embedding_matrix])
+    embedding_layer_1 = emb_layer(input_1)
+    embedding_layer_2 = emb_layer(input_2)
     embedded_sequences = concatenate([embedding_layer_1, embedding_layer_2])
     x = LSTM(lstm_size,
              dropout=rate_drop_lstm,
@@ -93,11 +94,12 @@ def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, 
     merged = Attention()(x)
     merged = Dense(DENSE_SIZE, activation=act)(merged)
     merged = Dropout(rate_drop_dense)(merged)
-    merged = BatchNormalization()(merged)
+    # merged = BatchNormalization()(merged)
     outputs = Dense(1, activation='sigmoid')(merged)
 
     model = Model(inputs=[input_1, input_2], outputs=outputs)
     model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
+    model.summary()
 
     return model
 
