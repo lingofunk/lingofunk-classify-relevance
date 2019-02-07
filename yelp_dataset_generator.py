@@ -74,12 +74,13 @@ class YELPSequence(Sequence):
         if (preprocessor is None) or preprocess:
             self.preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
             start = time()
-            m = self.restaurant_reviews[:1000]
+            m = self.restaurant_reviews[:10000]
             m = list(np.array(m).reshape(-1))
-            print("1000 rests.")
+            print(m[:50])
+            print("10000 rests.")
             self.preprocessor.fit_texts(m)
             finish = time()
-            print("1000 rests. ok", finish - start)
+            print("10000 rests. ok", finish - start)
             print(0 / 0)
 
             """
