@@ -68,11 +68,11 @@ class YELPSequence(Sequence):
         self.batch_size = batch_size
         self.preprocessor = None
 
-    def preprocess(self, preprocessor=None):
+    def preprocess(self, preprocessor=None, preprocess=False):
         print("^^^^^^^^^^^^^")
-        if preprocessor is None:
+        if (preprocessor is None) or preprocess:
             self.preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
-            for i in range(self.n_restaurants):
+            for i in range(self.n_restaurants // 50):
                 if i % 100 == 0:
                     print(f"Rast. {i} is fitted.")
                 self.preprocessor.fit_texts(self.restaurant_reviews[i])
