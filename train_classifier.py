@@ -102,11 +102,11 @@ def train():
     try:
         print("PREPROC")
         with open(PRERPOCESSOR_FILE, 'rb') as f:
-            preprocesor = pickle.load(PRERPOCESSOR_FILE)
+            preprocesor = pickle.load(f)
             print("PREPROC_____")
-        yelp_dataset_generator.preprocess(preprocesor)
+            yelp_dataset_generator.preprocess(preprocesor)
 
-        logger.info("Opened preprocessing file.")
+            logger.info("Opened preprocessing file.")
     except:
         yelp_dataset_generator.preprocess()
 
