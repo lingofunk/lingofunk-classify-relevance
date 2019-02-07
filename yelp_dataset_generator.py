@@ -143,6 +143,6 @@ class YELPSequence(Sequence):
 
             if process_target:
                 y_batch = [1] * n_positive_examples + [0] * (n_negative_examples - kk)
-                return [x_batch_l, x_batch_r], y_batch
+                return np.array([np.array(x_batch_l), np.array(x_batch_r)]), y_batch
             else:
                 return [x_batch_l, x_batch_r]
