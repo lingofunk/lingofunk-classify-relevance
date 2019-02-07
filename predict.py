@@ -12,9 +12,9 @@ from train_classifier import Preprocess  # for unpickling to work properly
 
 ROOT = get_root()
 MODEL_PATH = os.path.join(ROOT, "assets", "model")
-PREPROCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor.pkl")
-ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture.json")
-WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights.h5")
+PREPROCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
+ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architectur_attn.json")
+WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights_attn.h5")
 
 
 class PredictionPipeline(object):
