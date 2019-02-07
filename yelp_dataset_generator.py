@@ -97,7 +97,6 @@ class YELPSequence(Sequence):
         idx_end = self.batch_size * (idx + 1)
         x_batch_l = []
         x_batch_r = []
-        y_batch = []
         for i in range(idx_start, min(idx_end, self.n_restaurants)):
             n_comments = len(self.restaurant_reviews[i])
             probs = self.lens_restaurants / (self.n_comments_total - n_comments)
@@ -108,8 +107,6 @@ class YELPSequence(Sequence):
             positive_examples = np.random.random_integers(low=0, high=n_comments - 1, size=(n_positive_examples, 2))
             print("Size: ", positive_examples.shape)
             for ex in positive_examples:
-                print(ex[0], ex[1], n_comments)
-                print("*****************")
                 x_batch_l.append(self.restaurant_reviews[i][ex[0]])
                 x_batch_r.append(self.restaurant_reviews[i][ex[1]])
             del positive_examples
