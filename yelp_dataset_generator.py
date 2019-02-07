@@ -106,6 +106,7 @@ class YELPSequence(Sequence):
             # 1
             n_positive_examples = np.random.random_integers(2, max(3, n_comments // 10))
             positive_examples = np.random.random_integers(low=0, high=n_comments, size=(n_positive_examples, 2))
+            print("Size: ", positive_examples.shape)
             for ex in positive_examples:
                 print(ex[0], ex[1], n_comments)
                 print("*****************")
