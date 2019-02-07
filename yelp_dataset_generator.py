@@ -74,21 +74,11 @@ class YELPSequence(Sequence):
         if (preprocessor is None) or preprocess:
             self.preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
             start = time()
-            m = self.restaurant_reviews[:10000]
-            m = list(np.array(m).reshape(-1))
-            print(m[:50])
-            print("10000 rests.")
-            self.preprocessor.fit_texts(m)
+            all_texts = list(np.array(self.restaurant_reviews).reshape(-1))
+            print(len(all_texts), self.n_comments_total)
+            self.preprocessor.fit_texts(all_texts)
             finish = time()
-            print("10000 rests. ok", finish - start)
-            print(0 / 0)
-
-            """
-            for i in range(self.n_restaurants // 50):
-                if i % 100 == 0:
-                    print(f"Rast. {i} is fitted.")
-                self.preprocessor.fit_texts(self.restaurant_reviews[i])
-                """
+            print(f"{all_texts} rests fitted", finish - start)
         else:
             self.preprocessor = preprocessor
 
