@@ -69,6 +69,7 @@ class YELPSequence(Sequence):
         self.preprocessor = None
 
     def preprocess(self, preprocessor=None):
+        print("^^^^^^^^^^^^^")
         if preprocessor is None:
             self.preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
             for i in range(self.n_restaurants):
