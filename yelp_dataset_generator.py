@@ -143,6 +143,6 @@ class YELPSequence(Sequence):
 
             if process_target:
                 y_batch = [1] * n_positive_examples + [0] * (n_negative_examples - kk)
-                yield [x_batch_l, x_batch_r], y_batch
+                yield list(zip(x_batch_l, x_batch_r)), y_batch
             else:
-                yield [x_batch_l, x_batch_r]
+                yield list(zip(x_batch_l, x_batch_r))
