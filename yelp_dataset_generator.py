@@ -98,6 +98,7 @@ class YELPSequence(Sequence):
         idx_end = self.batch_size * (idx + 1)
         x_batch_l = []
         x_batch_r = []
+        y_batch = []
         for i in range(idx_start, min(idx_end, self.n_restaurants)):
             n_comments = len(self.restaurant_reviews[i])
             probs = self.lens_restaurants / (self.n_comments_total - n_comments)
@@ -109,6 +110,7 @@ class YELPSequence(Sequence):
             for ex in positive_examples:
                 x_batch_l.append(self.restaurant_reviews[i][ex[0]])
                 x_batch_r.append(self.restaurant_reviews[i][ex[1]])
+            y_batch.append([1] * n_positive_examples)
             del positive_examples
 
             # 0
@@ -138,16 +140,18 @@ class YELPSequence(Sequence):
                 _, f, s = negative_pairs[k]
                 x_batch_l.append(self.restaurant_reviews[i][f])
                 x_batch_r.append(negative_examples[s])
+            y_batch.append([0] * (n_negative_examples - kk))
 
             del negative_pairs, negative_examples, restaurant_comment_embeddings, negative_comment_embeddings
 
-            if process_target:
-                y_batch = [1] * n_positive_examples + [0] * (n_negative_examples - kk)
-                x_batch_l = self.preprocessor.transform_texts(x_batch_l)
-                x_batch_r = self.preprocessor.transform_texts(x_batch_r)
-                return [x_batch_l, x_batch_r], y_batch
-            else:
-                return [x_batch_l, x_batch_r]
+        if process_target:
+            x_batch_l = self.preprocessor.transform_texts(x_batch_l)
+            x_batch_r = self.preprocessor.transform_texts(x_batch_r)
+            return [x_batch_l, x_batch_r], y_batch
+        else:
+            x_batch_l = self.preprocessor.transform_texts(x_batch_l)
+            x_batch_r = self.preprocessor.transform_texts(x_batch_r)
+            return [x_batch_l, x_batch_r]
 
 
 class YELPSequenceTest(Sequence):
@@ -177,6 +181,7 @@ class YELPSequenceTest(Sequence):
         idx_end = self.batch_size * (idx + 1)
         x_batch_l = []
         x_batch_r = []
+        y_batch = []
         for i in range(idx_start, min(idx_end, self.n_restaurants)):
             n_comments = len(self.restaurant_reviews[i])
             probs = self.lens_restaurants / (self.n_comments_total - n_comments)
@@ -188,6 +193,7 @@ class YELPSequenceTest(Sequence):
             for ex in positive_examples:
                 x_batch_l.append(self.restaurant_reviews[i][ex[0]])
                 x_batch_r.append(self.restaurant_reviews[i][ex[1]])
+            y_batch.append([1] * n_positive_examples)
             del positive_examples
 
             # 0
@@ -217,14 +223,16 @@ class YELPSequenceTest(Sequence):
                 _, f, s = negative_pairs[k]
                 x_batch_l.append(self.restaurant_reviews[i][f])
                 x_batch_r.append(negative_examples[s])
+            y_batch.append([0] * (n_negative_examples - kk))
 
             del negative_pairs, negative_examples, restaurant_comment_embeddings, negative_comment_embeddings
 
-            if process_target:
-                y_batch = [1] * n_positive_examples + [0] * (n_negative_examples - kk)
-                x_batch_l = self.preprocessor.transform_texts(x_batch_l)
-                x_batch_r = self.preprocessor.transform_texts(x_batch_r)
-                return [x_batch_l, x_batch_r], y_batch
-            else:
-                return [x_batch_l, x_batch_r]
+        if process_target:
+            x_batch_l = self.preprocessor.transform_texts(x_batch_l)
+            x_batch_r = self.preprocessor.transform_texts(x_batch_r)
+            return [x_batch_l, x_batch_r], y_batch
+        else:
+            x_batch_l = self.preprocessor.transform_texts(x_batch_l)
+            x_batch_r = self.preprocessor.transform_texts(x_batch_r)
+            return [x_batch_l, x_batch_r]
 
