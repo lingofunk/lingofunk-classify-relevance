@@ -4,6 +4,7 @@ import gc
 import os
 import numpy as np
 import pandas as pd
+from time import time
 
 from bpemb import BPEmb
 from keras.preprocessing import text, sequence
@@ -72,10 +73,21 @@ class YELPSequence(Sequence):
         print("^^^^^^^^^^^^^")
         if (preprocessor is None) or preprocess:
             self.preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
+            start = time()
+            m = self.restaurant_reviews[:1000]
+            m = list(np.array(m).reshape(-1))
+            print("1000 rests.")
+            self.preprocessor.fit_texts(m)
+            finish = time()
+            print("1000 rests. ok", finish - start)
+            print(0 / 0)
+
+            """
             for i in range(self.n_restaurants // 50):
                 if i % 100 == 0:
                     print(f"Rast. {i} is fitted.")
                 self.preprocessor.fit_texts(self.restaurant_reviews[i])
+                """
         else:
             self.preprocessor = preprocessor
 
