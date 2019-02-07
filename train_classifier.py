@@ -107,9 +107,9 @@ def train():
     except:
         yelp_dataset_generator.preprocess()
 
-        logger.info(f"Saving the text transformer: {PRERPOCESSOR_FILE}")
-        with open(PRERPOCESSOR_FILE, "wb") as file:
-            pickle.dump(yelp_dataset_generator.preprocessor, file)
+    logger.info(f"Saving the text transformer: {PRERPOCESSOR_FILE}")
+    with open(PRERPOCESSOR_FILE, "wb") as file:
+        pickle.dump(yelp_dataset_generator.preprocessor, file)
 
 #    gc.collect()
   #  gc.collect()
