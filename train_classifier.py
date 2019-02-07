@@ -41,7 +41,7 @@ TRAIN_SIZE = 0.90
 BATCH_SIZE = 1024
 EPOCHS = 2
 
-
+"""
 class RocAucEvaluation(TensorBoard):
     def __init__(
         self,
@@ -71,6 +71,8 @@ class RocAucEvaluation(TensorBoard):
         #     y_pred = self.model.predict(self.X_val, verbose=0)
         #     score = np.apply_along_axis(roc_auc_score, 0, self.y_val, y_pred)
         #     print(f'\nEpoch: {epoch + 1};\tavg. ROC-AUC: {score.mean():.6f};\tclass-wise ROC-AUC: {score}\n')
+
+"""
 
 
 def get_model(maxlen, max_features, embed_size, embedding_matrix, class_count):
@@ -114,21 +116,17 @@ def train():
     with open(PRERPOCESSOR_FILE, "wb") as file:
         pickle.dump(yelp_dataset_generator.preprocessor, file)
 
-#    gc.collect()
-  #  gc.collect()
- #   gc.collect()
-
     word_index = yelp_dataset_generator.preprocessor.tokenizer.word_index
     embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBED_SIZE)
 
     logger.info(f"Model training, train size: {TRAIN_SIZE}")
-
+    """
     RocAuc = RocAucEvaluation(
         log_dir=LOG_PATH,
         batch_size=BATCH_SIZE,
         interval=1,
     )
-
+    """
     model = get_model(
         MAXLEN, MAX_FEATURES, EMBED_SIZE, embedding_matrix, 1
     )
