@@ -21,6 +21,8 @@ from Attention import Attention
 
 from utils import get_logger, get_root
 
+from yelp_dataset_generator import *
+
 
 np.random.seed(42)
 warnings.filterwarnings("ignore")
@@ -30,7 +32,6 @@ DIR_ROOT = get_root()
 DIR_ASSETS = os.path.join(DIR_ROOT, "assets")
 MODEL_PATH = os.path.join(DIR_ASSETS, "model")
 LOG_PATH = os.path.join(DIR_ASSETS, "tb_logs")
-DATA_FILE = os.path.join(DIR_ROOT, "yelp-data", "rel-train.csv")
 
 MAX_SEQUENCE_LENGTH = 150
 MAX_NB_WORDS = 100000
@@ -45,38 +46,6 @@ MAX_FEATURES = 30000
 BATCH_SIZE = 1024
 EPOCHS = 5
 act = "relu"
-
-
-class Preprocess(object):
-    def __init__(self, max_features, maxlen):
-        self.max_features = max_features
-        self.maxlen = maxlen
-        self.tokenizer = text.Tokenizer(num_words=self.max_features)
-
-    def fit_texts(self, list_sentences):
-        self.tokenizer.fit_on_texts(list_sentences)
-
-    def transform_texts(self, list_sentences):
-        tokenized_sentences = self.tokenizer.texts_to_sequences(list_sentences)
-        features = sequence.pad_sequences(tokenized_sentences, maxlen=self.maxlen)
-        return features
-
-
-def get_embeddings(word_index, max_features, embed_size):
-    assert embed_size in [25, 50, 100, 200, 300]  # default sizes of embeddings in BPEmb
-    bpemb_en = BPEmb(lang="en", dim=embed_size)
-    embedding_matrix = np.zeros((max_features, embed_size))
-    in_voc_words = 0
-
-    for word, i in word_index.items():
-        if i >= max_features:
-            break
-        in_voc_words += 1
-        embedding_matrix[i] = np.sum(bpemb_en.embed(word), axis=0)
-
-    print(f"{in_voc_words} words in vocabulary found out of {max_features} total.")
-
-    return embedding_matrix
 
 
 class RocAucEvaluation(TensorBoard):
@@ -136,73 +105,56 @@ def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, 
 def train():
     logger = get_logger()
 
-    logger.info(f"Loading data: {DATA_FILE}")
-    train = pd.read_csv(DATA_FILE)
-
-    features_0 = train["comment_0"].fillna("# #").values
-    features_1 = train["comment_1"].fillna("# #").values
-    # target = convert_binary_toxic(train, config.classes)
-    # target = train[config.classes]
-    target = train["label"]
-    del train
-    gc.collect()
-
     logger.info(f"Transforming data")
-    preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAX_SEQUENCE_LENGTH)
-    preprocessor.fit_texts(list(features_0))
-    preprocessor.fit_texts(list(features_1))
-    features_0 = preprocessor.transform_texts(features_0)
-    features_1 = preprocessor.transform_texts(features_1)
-    word_index = preprocessor.tokenizer.word_index
 
-    PRERPOCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor.pkl")
+    yelp_dataset_generator = YELPSequence(batch_size=128)
+
+    PRERPOCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
+
+    try:
+        print("PREPROC")
+        with open(PRERPOCESSOR_FILE, 'rb') as f:
+            preprocesor = pickle.load(f)
+            print("PREPROC_____")
+            yelp_dataset_generator.preprocess(preprocesor)
+
+            logger.info("Opened preprocessing file.")
+    except:
+        yelp_dataset_generator.preprocess()
+
     logger.info(f"Saving the text transformer: {PRERPOCESSOR_FILE}")
-
     with open(PRERPOCESSOR_FILE, "wb") as file:
-        pickle.dump(preprocessor, file)
-    del preprocessor
-    gc.collect()
+        pickle.dump(yelp_dataset_generator.preprocessor, file)
 
-    logger.info("Opened preprocessing file.")
-    embedding_matrix = get_embeddings(
-        word_index, MAX_FEATURES, EMBEDDING_DIM
-    )
-    # embedding_matrix = np.zeros((MAX_FEATURES, EMBED_SIZE))  # For quickly testing the validity of the graph
+    word_index = yelp_dataset_generator.preprocessor.tokenizer.word_index
+    embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBED_SIZE)
 
     logger.info(f"Model training, train size: {TRAIN_SIZE}")
-    features_0_train, features_0_val, features_1_train, features_1_val, y_train, y_val = train_test_split(
-        features_0, features_1, target, train_size=TRAIN_SIZE, random_state=233
-    )
+    """
     RocAuc = RocAucEvaluation(
         log_dir=LOG_PATH,
         batch_size=BATCH_SIZE,
-        validation_data=([features_0_val, features_1_val], y_val),
         interval=1,
     )
+    """
+    model = get_model(MAXLEN, MAX_FEATURES, LSTM_SIZE, RATE_DROP_LSTM, RATE_DROP_DENSE, EMBEDDING_DIM, embedding_matrix)
+
+    logger.info("Model created.")
+
+    hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=2, verbose=1, callbacks=None,
+                               validation_data=None, validation_steps=None, class_weight=None, max_queue_size=1000,
+                               workers=16, use_multiprocessing=True, shuffle=True, initial_epoch=0)
 
     early_stopping = EarlyStopping(monitor='val_loss', patience=5)
 
-    model = get_model(
-        MAX_SEQUENCE_LENGTH, MAX_FEATURES, LSTM_SIZE, RATE_DROP_LSTM, RATE_DROP_DENSE, EMBEDDING_DIM, embedding_matrix)
-
-    hist = model.fit(
-        [features_0_train, features_1_train],
-        y_train,
-        batch_size=BATCH_SIZE,
-        epochs=EPOCHS,
-        validation_data=([features_0_val, features_1_val], y_val),
-        callbacks=[RocAuc, early_stopping],
-        verbose=1,
-    )
-
-    ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture.json")
+    ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn.json")
     logger.info(f"Saving the architecture: {ARCHITECTURE_FILE}")
 
     with open(ARCHITECTURE_FILE, "w") as file:
         architecture_json = model.to_json()
         file.write(architecture_json)
 
-    WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights.h5")
+    WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights_attn.h5")
     logger.info(f"Saving the weights: {WEIGHTS_FILE}")
 
     model.save_weights(WEIGHTS_FILE)
