@@ -20,8 +20,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/train_classifier.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="215">
-              <caret line="116" column="25" lean-forward="true" selection-start-line="116" selection-start-column="25" selection-end-line="116" selection-end-column="25" />
+            <state relative-caret-position="660">
+              <caret line="135" column="85" selection-start-line="135" selection-start-column="85" selection-end-line="135" selection-end-column="85" />
               <folding>
                 <element signature="e#135#144#0" expanded="true" />
               </folding>
@@ -32,8 +32,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/yelp_dataset_generator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="291">
-              <caret line="55" column="7" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="7" />
+            <state relative-caret-position="246">
+              <caret line="76" column="54" selection-start-line="76" selection-start-column="54" selection-end-line="76" selection-end-column="54" />
               <folding>
                 <element signature="e#24#33#0" expanded="true" />
               </folding>
@@ -112,8 +112,8 @@
         <option value="$PROJECT_DIR$/Attention.py" />
         <option value="$PROJECT_DIR$/train_classifier_attn.py" />
         <option value="$PROJECT_DIR$/traintest_generator.py" />
-        <option value="$PROJECT_DIR$/train_classifier.py" />
         <option value="$PROJECT_DIR$/yelp_dataset_generator.py" />
+        <option value="$PROJECT_DIR$/train_classifier.py" />
       </list>
     </option>
   </component>
@@ -245,12 +245,12 @@
       <workItem from="1549371325658" duration="11816000" />
       <workItem from="1549385373197" duration="12734000" />
       <workItem from="1549452954217" duration="8858000" />
-      <workItem from="1549521883104" duration="21097000" />
+      <workItem from="1549521883104" duration="21817000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="85988000" />
+    <option name="totallyTimeSpent" value="86708000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
@@ -410,8 +410,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/yelp_dataset_generator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="55" column="7" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="7" />
+        <state relative-caret-position="246">
+          <caret line="76" column="54" selection-start-line="76" selection-start-column="54" selection-end-line="76" selection-end-column="54" />
           <folding>
             <element signature="e#24#33#0" expanded="true" />
           </folding>
@@ -420,8 +420,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/train_classifier.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="215">
-          <caret line="116" column="25" lean-forward="true" selection-start-line="116" selection-start-column="25" selection-end-line="116" selection-end-column="25" />
+        <state relative-caret-position="660">
+          <caret line="135" column="85" selection-start-line="135" selection-start-column="85" selection-end-line="135" selection-end-column="85" />
           <folding>
             <element signature="e#135#144#0" expanded="true" />
           </folding>

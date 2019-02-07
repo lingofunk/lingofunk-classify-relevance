@@ -59,7 +59,7 @@ def get_embeddings(word_index, max_features, embed_size):
 
 
 class YELPSequence(Sequence):
-    def __init__(self, batch_size=128):
+    def __init__(self, batch_size=256):
         super().__init__()
         self.restaurant_reviews = pd.read_csv(PATH_TO_YELP_CSV)
         self.restaurant_reviews = self.restaurant_reviews.groupby(["business_id"]).agg({"text": list})["text"].values
@@ -74,7 +74,7 @@ class YELPSequence(Sequence):
         if (preprocessor is None) or preprocess:
             self.preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
             start = time()
-            all_texts = sum(self.restaurant_reviews, [])
+            all_texts = sum(self.restaurant_reviews[:2000], [])
             print(type(all_texts[0]))
             print(len(all_texts), self.n_comments_total)
             self.preprocessor.fit_texts(all_texts)

@@ -133,7 +133,7 @@ def train():
 
     logger.info("Model created.")
 
-    hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=1, verbose=1, callbacks=None,
+    hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=2, verbose=1, callbacks=None,
                                validation_data=None, validation_steps=None, class_weight=None, max_queue_size=1000,
                                workers=16, use_multiprocessing=True, shuffle=True, initial_epoch=0)
 
