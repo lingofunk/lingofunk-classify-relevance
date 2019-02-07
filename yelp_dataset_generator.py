@@ -60,7 +60,7 @@ def get_embeddings(word_index, max_features, embed_size):
 
 
 class YELPSequence(Sequence):
-    def __init__(self, batch_size=256):
+    def __init__(self, batch_size=128):
         super().__init__()
         self.restaurant_reviews = pd.read_csv(PATH_TO_YELP_CSV_TRAIN)
         self.restaurant_reviews = self.restaurant_reviews.groupby(["business_id"]).agg({"text": list})["text"].values

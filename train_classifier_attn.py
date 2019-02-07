@@ -44,7 +44,7 @@ VALIDATION_SPLIT = 0.1
 TRAIN_SIZE = 1 - VALIDATION_SPLIT
 MAX_FEATURES = 100000
 BATCH_SIZE = 1024
-EPOCHS = 5
+EPOCHS = 1
 act = "relu"
 
 
@@ -109,7 +109,7 @@ def train():
 
     logger.info(f"Transforming data")
 
-    yelp_dataset_generator = YELPSequence(batch_size=256)
+    yelp_dataset_generator = YELPSequence(batch_size=128)
 
     PRERPOCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
 
@@ -131,7 +131,7 @@ def train():
     word_index = yelp_dataset_generator.preprocessor.tokenizer.word_index
     embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBEDDING_DIM)
 
-    yelp_dataset_generator_val = YELPSequenceTest(batch_size=256)
+    yelp_dataset_generator_val = YELPSequenceTest(batch_size=128)
     yelp_dataset_generator_val.preprocess(yelp_dataset_generator.preprocessor)
 
     logger.info(f"Model training, train size: {TRAIN_SIZE}")
@@ -146,7 +146,7 @@ def train():
 
     logger.info("Model created.")
 
-    hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=2, verbose=1, callbacks=None,
+    hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=1, verbose=1, callbacks=None,
                                validation_data=yelp_dataset_generator_val,
                                validation_steps=None, class_weight=None, max_queue_size=1000,
                                workers=16, use_multiprocessing=True, shuffle=True, initial_epoch=0)
