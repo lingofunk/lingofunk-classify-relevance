@@ -95,7 +95,8 @@ class YELPSequence(Sequence):
     def __getitem__(self, idx, process_target=True):
         idx_start = self.batch_size * idx
         idx_end = self.batch_size * (idx + 1)
-        x_batch = []
+        x_batch_l = []
+        x_batch_r = []
         y_batch = []
         for i in range(idx_start, min(idx_end, self.n_restaurants)):
             n_comments = len(self.restaurant_reviews[i])
@@ -106,7 +107,8 @@ class YELPSequence(Sequence):
             n_positive_examples = np.random.random_integers(2, max(3, n_comments // 10))
             positive_examples = np.random.random_integers(n_comments, size=(n_positive_examples, 2))
             for f, s in positive_examples:
-                x_batch.append([self.restaurant_reviews[f][0], self.restaurant_reviews[s][0]])
+                x_batch_l.append(self.restaurant_reviews[f][0])
+                x_batch_r.append(self.restaurant_reviews[s][0])
             del positive_examples
 
             # 0
@@ -129,21 +131,18 @@ class YELPSequence(Sequence):
             negative_pairs.sort()
             kk = n_negative_examples // 3
             for k in range(kk):
-                _, comment_0_ind, comment_1_ind = negative_pairs[k]
-                x_batch.append([self.restaurant_reviews[i][comment_0_ind], negative_examples[comment_1_ind]])
+                _, f, s = negative_pairs[k]
+                x_batch_l.append(self.restaurant_reviews[i][f])
+                x_batch_r.append(self.restaurant_reviews[i][s])
             for k in range(2 * kk, n_negative_examples):
-                _, comment_0_ind, comment_1_ind = negative_pairs[k]
-                x_batch.append([self.restaurant_reviews[i][comment_0_ind], negative_examples[comment_1_ind]])
-            y_batch.append([0] * (n_negative_examples - kk))
+                _, f, s = negative_pairs[k]
+                x_batch_l.append(self.restaurant_reviews[i][f])
+                x_batch_r.append(self.restaurant_reviews[i][s])
 
             del negative_pairs, negative_examples, restaurant_comment_embeddings, negative_comment_embeddings
-            #gc.collect()
-            #gc.collect()
-            #gc.collect()
-            #gc.collect()
 
             if process_target:
                 y_batch = [1] * n_positive_examples + [0] * (n_negative_examples - kk)
-                yield x_batch, y_batch
+                yield [x_batch_l, x_batch_r], y_batch
             else:
-                yield x_batch
+                yield [x_batch_l, x_batch_r]
