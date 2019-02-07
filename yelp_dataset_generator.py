@@ -74,7 +74,7 @@ class YELPSequence(Sequence):
         if (preprocessor is None) or preprocess:
             self.preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
             start = time()
-            print(type(self.restaurant_reviews), type(self.restaurant_reviews[0]))
+            print(type(self.restaurant_reviews), type(self.restaurant_reviews[0]), type(self.restaurant_reviews[0][0]))
             all_texts = list(np.array(self.restaurant_reviews[:1000]).reshape(-1))
             print(type(all_texts[0]))
             print(len(all_texts), self.n_comments_total)
