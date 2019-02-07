@@ -105,10 +105,13 @@ class YELPSequence(Sequence):
 
             # 1
             n_positive_examples = np.random.random_integers(2, max(3, n_comments // 10))
-            positive_examples = np.random.random_integers(n_comments, size=(n_positive_examples, 2))
-            for f, s in positive_examples:
-                x_batch_l.append(self.restaurant_reviews[i][f])
-                x_batch_r.append(self.restaurant_reviews[i][s])
+            positive_examples = np.random.random_integers(low=0, high=n_comments, size=(n_positive_examples, 2))
+            for ex in positive_examples:
+                print(ex[0], ex[1])
+                print("*****************")
+                print(self.restaurant_reviews[i][ex[0]][:10], ' $$ ', self.restaurant_reviews[i][ex[1]][:10])
+                x_batch_l.append(self.restaurant_reviews[i][ex[0]])
+                x_batch_r.append(self.restaurant_reviews[i][ex[1]])
             del positive_examples
 
             # 0
