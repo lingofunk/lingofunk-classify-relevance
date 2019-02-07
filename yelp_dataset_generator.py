@@ -60,16 +60,23 @@ def get_embeddings(word_index, max_features, embed_size):
 class YELPSequence(Sequence):
     def __init__(self, batch_size=128):
         super().__init__()
-        self.preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
         self.restaurant_reviews = pd.read_csv(PATH_TO_YELP_CSV)
         self.restaurant_reviews = self.restaurant_reviews.groupby(["business_id"]).agg({"text": list})["text"].values
         self.n_comments_total = sum(len(restaurant) for restaurant in self.restaurant_reviews)
         self.n_restaurants = len(self.restaurant_reviews)
         self.lens_restaurants = np.array(list(map(len, self.restaurant_reviews)))
         self.batch_size = batch_size
+        self.preprocessor = None
 
-        for i in range(self.n_restaurants):
-            self.preprocessor.fit_texts(self.restaurant_reviews[i])
+    def preprocess(self, preprocessor=None):
+        if preprocessor is None:
+            self.preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
+            for i in range(self.n_restaurants):
+                if i % 100 == 0:
+                    print(f"Rast. {i} is fitted.")
+                self.preprocessor.fit_texts(self.restaurant_reviews[i])
+        else:
+            self.preprocessor = preprocessor
 
     @staticmethod
     def compute_similarity(vec1, vec2):
@@ -123,10 +130,10 @@ class YELPSequence(Sequence):
             y_batch.append([0] * (n_negative_examples - kk))
 
             del negative_pairs, negative_examples, restaurant_comment_embeddings, negative_comment_embeddings
-            gc.collect()
-            gc.collect()
-            gc.collect()
-            gc.collect()
+            #gc.collect()
+            #gc.collect()
+            #gc.collect()
+            #gc.collect()
 
             if process_target:
                 y_batch = [1] * n_positive_examples + [0] * (n_negative_examples - kk)

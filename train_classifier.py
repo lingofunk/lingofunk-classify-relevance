@@ -98,15 +98,19 @@ def train():
     yelp_dataset_generator = YELPSequence(batch_size=128)
 
     PRERPOCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor.pkl")
-    logger.info(f"Saving the text transformer: {PRERPOCESSOR_FILE}")
 
-    with open(PRERPOCESSOR_FILE, "wb") as file:
-        pickle.dump(yelp_dataset_generator.preprocessor, file)
-    gc.collect()
-    gc.collect()
-    gc.collect()
+    try:
+        preprocesor = pickle.load(PRERPOCESSOR_FILE)
+        logger.info("Opened preprocessing file.")
+    except:
+        yelp_dataset_generator.preprocess()
+        logger.info(f"Saving the text transformer: {PRERPOCESSOR_FILE}")
+        with open(PRERPOCESSOR_FILE, "wb") as file:
+            pickle.dump(yelp_dataset_generator.preprocessor, file)
 
-    logger.info("Opened preprocessing file.")
+#    gc.collect()
+  #  gc.collect()
+ #   gc.collect()
 
     word_index = yelp_dataset_generator.preprocessor.tokenizer.word_index
     embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBED_SIZE)
