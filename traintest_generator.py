@@ -1,8 +1,5 @@
 #! /usr/bin/env python
 
-from scipy.spatial.distance import cosine
-import csv
-
 from train_classifier import *
 
 DIR_ROOT = get_root()
