@@ -81,7 +81,9 @@ class YELPSequence(Sequence):
             finish = time()
             print(f"{len(all_texts)} rests fitted", finish - start)
         else:
+            print("PREPROSECCOR")
             self.preprocessor = preprocessor
+            print("PREPROSECCOR loaded")
 
     @staticmethod
     def compute_similarity(vec1, vec2):

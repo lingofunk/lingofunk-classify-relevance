@@ -100,7 +100,9 @@ def train():
     PRERPOCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor.pkl")
 
     try:
+        print("PREPROC")
         preprocesor = pickle.load(PRERPOCESSOR_FILE)
+        print("PREPROC_____")
         yelp_dataset_generator.preprocess(preprocesor)
 
         logger.info("Opened preprocessing file.")
