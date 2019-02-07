@@ -127,7 +127,7 @@ def train():
         pickle.dump(yelp_dataset_generator.preprocessor, file)
 
     word_index = yelp_dataset_generator.preprocessor.tokenizer.word_index
-    embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBED_SIZE)
+    embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBEDDING_DIM)
 
     logger.info(f"Model training, train size: {TRAIN_SIZE}")
     """
