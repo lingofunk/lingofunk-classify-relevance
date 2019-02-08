@@ -151,7 +151,7 @@ class YELPSequence(Sequence):
 
         x_batch_l, x_batch_r, y_batch = shuffle(x_batch_l, x_batch_r, y_batch, random_state=0)
 
-        if idx % 100 == 0:
+        if self.test and (idx % 10 == 0):
             out = open("some_examples.txt", "a")
             out.write(str(idx) + "\n")
             out.write(x_batch_l[0] + "^^^^^^\n")

@@ -129,7 +129,7 @@ def train():
     word_index = yelp_dataset_generator.preprocessor.tokenizer.word_index
     embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBEDDING_DIM)
 
-    yelp_dataset_generator_val = YELPSequence(batch_size=16, test=True)
+    yelp_dataset_generator_val = YELPSequence(batch_size=1, test=True, preproc=yelp_dataset_generator.preprocessor)
 
     logger.info(f"Model training, train size: {TRAIN_SIZE}")
     """
@@ -145,7 +145,7 @@ def train():
 
     hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=1, verbose=1, callbacks=None,
                                validation_data=yelp_dataset_generator_val,
-                               validation_steps=None, class_weight=None, max_queue_size=1000,
+                               validation_steps=100, class_weight=None, max_queue_size=1000,
                                workers=16, use_multiprocessing=True, shuffle=True, initial_epoch=0)
 
     early_stopping = EarlyStopping(monitor='val_loss', patience=5)
