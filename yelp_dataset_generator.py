@@ -124,7 +124,8 @@ class YELPSequence(Sequence):
             negative_restaurants = np.random.choice(self.n_restaurants, n_negative_examples, p=probs)
             negative_examples = []
             for restaurant in negative_restaurants:
-                comment = np.random.choice(self.restaurant_reviews[restaurant])
+                comment = str(np.random.choice(self.restaurant_reviews[restaurant]))
+                assert type(comment) == ""
                 # print("COMMENT:\n" + comment + '***************\n')
                 negative_examples.append(str(comment))
             del negative_restaurants
@@ -143,11 +144,11 @@ class YELPSequence(Sequence):
             for k in range(kk):
                 _, f, s = negative_pairs[k]
                 x_batch_l.append(self.restaurant_reviews[i][f])
-                x_batch_r.append(negative_comments[s])
+                x_batch_r.append(negative_examples[s])
             for k in range(2 * kk, n_negative_examples):
                 _, f, s = negative_pairs[k]
                 x_batch_l.append(self.restaurant_reviews[i][f])
-                x_batch_r.append(negative_comments[s])
+                x_batch_r.append(negative_examples[s])
             y_batch.extend(np.zeros(n_negative_examples - kk).tolist())
 
             del negative_pairs, negative_examples, restaurant_comments, negative_comments
