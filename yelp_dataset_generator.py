@@ -123,17 +123,18 @@ class YELPSequence(Sequence):
             negative_restaurants = np.random.choice(self.n_restaurants, n_negative_examples, p=probs)
             negative_examples = []
             for restaurant in negative_restaurants:
-                negative_examples.extend(np.random.choice(self.restaurant_reviews[restaurant]))
+                comment_ind = np.random.choice(self.restaurant_reviews[restaurant])
+                negative_examples.extend(self.restaurant_reviews[restaurant][comment_ind])
             del negative_restaurants
-            restaurant_comment_embeddings = self.preprocessor.transform_texts(self.restaurant_reviews[i])
-            negative_comment_embeddings = self.preprocessor.transform_texts(negative_examples)
+            restaurant_comments = self.preprocessor.transform_texts(self.restaurant_reviews[i])
+            negative_comments = self.preprocessor.transform_texts(negative_examples)
 
             negative_pairs = []
 
             for j in range(n_negative_examples):
                 comment_0_ind = np.random.randint(0, n_comments)
-                negative_pairs.append((self.compute_similarity(restaurant_comment_embeddings[comment_0_ind],
-                                                               negative_comment_embeddings[j]),
+                negative_pairs.append((self.compute_similarity(restaurant_comments[comment_0_ind],
+                                                               negative_comments[j]),
                                        comment_0_ind, j))
             negative_pairs.sort()
             kk = n_negative_examples // 3
@@ -147,7 +148,7 @@ class YELPSequence(Sequence):
                 x_batch_r.append(negative_examples[s])
             y_batch.extend(np.zeros(n_negative_examples - kk).tolist())
 
-            del negative_pairs, negative_examples, restaurant_comment_embeddings, negative_comment_embeddings
+            del negative_pairs, negative_examples, restaurant_comments, negative_comments
 
         x_batch_l, x_batch_r, y_batch = shuffle(x_batch_l, x_batch_r, y_batch, random_state=0)
 
