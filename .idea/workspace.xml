@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="13d2616c-69b5-4e17-ae08-d8d642b6e6c7" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/train_classifier_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/train_classifier_attn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yelp_dataset_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/yelp_dataset_generator.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,11 +16,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/yelp_dataset_generator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2090">
-              <caret line="156" column="27" selection-start-line="156" selection-start-column="27" selection-end-line="156" selection-end-column="27" />
+            <state relative-caret-position="590">
+              <caret line="153" column="19" selection-start-line="153" selection-start-column="19" selection-end-line="153" selection-end-column="19" />
               <folding>
                 <element signature="e#24#33#0" expanded="true" />
               </folding>
@@ -29,7 +28,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/train_classifier_attn.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="300">
@@ -90,8 +89,8 @@
       <find>trans</find>
       <find>pri</find>
       <find>embed_</find>
-      <find>epochs</find>
       <find>fit</find>
+      <find>epochs</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -115,8 +114,8 @@
         <option value="$PROJECT_DIR$/train_classifier.py" />
         <option value="$PROJECT_DIR$/traintest_generator.py" />
         <option value="$PROJECT_DIR$/predict.py" />
-        <option value="$PROJECT_DIR$/yelp_dataset_generator.py" />
         <option value="$PROJECT_DIR$/train_classifier_attn.py" />
+        <option value="$PROJECT_DIR$/yelp_dataset_generator.py" />
       </list>
     </option>
   </component>
@@ -248,12 +247,12 @@
       <workItem from="1549371325658" duration="11816000" />
       <workItem from="1549385373197" duration="12734000" />
       <workItem from="1549452954217" duration="8858000" />
-      <workItem from="1549521883104" duration="33410000" />
+      <workItem from="1549521883104" duration="33746000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="98301000" />
+    <option name="totallyTimeSpent" value="98637000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
@@ -422,22 +421,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/yelp_dataset_generator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2090">
-          <caret line="156" column="27" selection-start-line="156" selection-start-column="27" selection-end-line="156" selection-end-column="27" />
-          <folding>
-            <element signature="e#24#33#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/train_classifier_attn.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
           <caret line="86" column="96" selection-start-line="86" selection-start-column="96" selection-end-line="86" selection-end-column="96" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/yelp_dataset_generator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="590">
+          <caret line="153" column="19" selection-start-line="153" selection-start-column="19" selection-end-line="153" selection-end-column="19" />
+          <folding>
+            <element signature="e#24#33#0" expanded="true" />
           </folding>
         </state>
       </provider>
