@@ -125,7 +125,6 @@ class YELPSequence(Sequence):
             negative_examples = []
             for restaurant in negative_restaurants:
                 comment = str(np.random.choice(self.restaurant_reviews[restaurant]))
-                assert type(comment) == ""
                 # print("COMMENT:\n" + comment + '***************\n')
                 negative_examples.append(str(comment))
             del negative_restaurants
