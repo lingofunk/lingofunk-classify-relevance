@@ -60,7 +60,7 @@ def get_embeddings(word_index, max_features, embed_size):
 
 
 class YELPSequence(Sequence):
-    def __init__(self, batch_size=128, test=False, preprocessor=None):
+    def __init__(self, batch_size=128, test=False, preproc=None):
         super().__init__()
         if test:
             self.restaurant_reviews = pd.read_csv(PATH_TO_YELP_CSV_TEST)
@@ -72,7 +72,7 @@ class YELPSequence(Sequence):
         self.n_restaurants = len(self.restaurant_reviews)
         self.lens_restaurants = np.array(list(map(len, self.restaurant_reviews)))
         self.batch_size = batch_size
-        self.preprocessor = preprocessor
+        self.preprocessor = preproc
         self.test = test
         self.preprocess()
 

@@ -111,7 +111,7 @@ def train():
     PRERPOCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
     with open(PRERPOCESSOR_FILE, 'rb') as f:
         preprocesor = pickle.load(f)
-        yelp_dataset_generator = YELPSequence(batch_size=16, test=False, preprocesor=preprocesor)
+        yelp_dataset_generator = YELPSequence(batch_size=16, test=False, preproc=preprocesor)
         logger.info("Opened preprocessing file.")
     if yelp_dataset_generator is None:
         YELPSequence(batch_size=16, test=False)
