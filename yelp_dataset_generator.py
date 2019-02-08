@@ -193,7 +193,7 @@ class YELPSequenceTest(Sequence):
             for ex in positive_examples:
                 x_batch_l.append(self.restaurant_reviews[i][ex[0]])
                 x_batch_r.append(self.restaurant_reviews[i][ex[1]])
-            y_batch.append([1] * n_positive_examples)
+            y_batch.extend([1] * n_positive_examples)
             del positive_examples
 
             # 0
@@ -223,7 +223,7 @@ class YELPSequenceTest(Sequence):
                 _, f, s = negative_pairs[k]
                 x_batch_l.append(self.restaurant_reviews[i][f])
                 x_batch_r.append(negative_examples[s])
-            y_batch.append([0] * (n_negative_examples - kk))
+            y_batch.extend([0] * (n_negative_examples - kk))
 
             del negative_pairs, negative_examples, restaurant_comment_embeddings, negative_comment_embeddings
 
