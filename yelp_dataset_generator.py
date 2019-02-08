@@ -149,6 +149,13 @@ class YELPSequence(Sequence):
 
             del negative_pairs, negative_examples, restaurant_comment_embeddings, negative_comment_embeddings
 
+        if idx % 50 == 0:
+            print(f"Examples {idx}")
+            print(x_batch_l[0])
+            print(x_batch_r[0])
+            print(y_batch[0])
+            print("*" * 100)
+
         x_batch_l, x_batch_r, y_batch = shuffle(x_batch_l, x_batch_r, y_batch, random_state=0)
         if process_target:
             x_batch_l = self.preprocessor.transform_texts(x_batch_l)

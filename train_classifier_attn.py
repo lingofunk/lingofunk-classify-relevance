@@ -84,7 +84,7 @@ class RocAucEvaluation(TensorBoard):
 def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, embed_size, embedding_matrix):
     input_1 = Input(shape=(maxlen,))
     input_2 = Input(shape=(maxlen,))
-    emb_layer = Embedding(max_features, embed_size, weights=[embedding_matrix], )
+    emb_layer = Embedding(max_features, embed_size, weights=[embedding_matrix], trainable=False)
     embedding_layer_1 = emb_layer(input_1)
     embedding_layer_2 = emb_layer(input_2)
     embedded_sequences = concatenate([embedding_layer_1, embedding_layer_2])
