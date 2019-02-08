@@ -39,6 +39,7 @@ class Preprocess(object):
         self.tokenizer.fit_on_texts(list_sentences)
 
     def transform_texts(self, list_sentences):
+        print("TYPE: ", type(list_sentences), type(list_sentences[0]))
         tokenized_sentences = self.tokenizer.texts_to_sequences(list_sentences)
         features = sequence.pad_sequences(tokenized_sentences, maxlen=self.maxlen)
         return features
