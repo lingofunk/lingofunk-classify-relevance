@@ -14,7 +14,7 @@ import tensorflow as tf
 from keras.backend.tensorflow_backend import set_session
 from keras.preprocessing import text, sequence
 from keras.models import Model
-from keras.layers import Dense, Input, Bidirectional, LSTM, Embedding, Dropout
+from keras.layers import Dense, Input, Bidirectional, LSTM, Embedding, Dropout, Add
 from keras.layers.merge import concatenate
 from keras.layers.normalization import BatchNormalization
 from keras.callbacks import EarlyStopping, TensorBoard, ModelCheckpoint
@@ -87,7 +87,8 @@ def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, 
     emb_layer = Embedding(max_features, embed_size, weights=[embedding_matrix], trainable=False)
     embedding_layer_1 = emb_layer(input_1)
     embedding_layer_2 = emb_layer(input_2)
-    embedded_sequences = concatenate([embedding_layer_1, embedding_layer_2], axis=-1)
+    # embedded_sequences = concatenate([embedding_layer_1, embedding_layer_2], axis=-1)
+    embedded_sequences = Add()([embedding_layer_1, embedding_layer_2], axis=-1)
     x = Bidirectional(LSTM(lstm_size,
                            dropout=rate_drop_lstm,
                            recurrent_dropout=rate_drop_lstm,
