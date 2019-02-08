@@ -17,7 +17,7 @@ from keras.models import Model
 from keras.layers import Dense, Input, Bidirectional, LSTM, Embedding, Dropout
 from keras.layers.merge import concatenate
 from keras.layers.normalization import BatchNormalization
-from keras.callbacks import EarlyStopping, TensorBoard
+from keras.callbacks import EarlyStopping, TensorBoard, ModelCheckpoint
 
 from Attention import Attention
 
@@ -144,8 +144,10 @@ def train():
     logger.info("Model created.")
 
     early_stopping = EarlyStopping(monitor='val_loss', patience=10)
+    model_checkpoint = ModelCheckpoint(MODEL_PATH, monitor='val_loss', verbose=1, save_best_only=True,
+                                       save_weights_only=False, mode='auto', period=1)
 
-    hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=20, verbose=1,
+    hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=10, verbose=1,
                                callbacks=[early_stopping],
                                validation_data=yelp_dataset_generator_val,
                                validation_steps=100, class_weight=None, max_queue_size=10000,

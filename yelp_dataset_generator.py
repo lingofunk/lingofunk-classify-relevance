@@ -84,13 +84,18 @@ class YELPSequence(Sequence):
         # train mode
         if (self.preprocessor is None) and not self.test:
             self.preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
-            start = time()
-            all_texts = sum(self.restaurant_reviews[:2000], [])
-            print(type(all_texts[0]))
-            print(len(all_texts), self.n_comments_total)
-            self.preprocessor.fit_texts(all_texts)
-            finish = time()
-            print(f"{len(all_texts)} rests fitted", finish - start)
+            counter = 0
+            for i in range(0, self.n_restaurants, 5000):
+                start = time()
+                high = min(i + 5000, self.n_restaurants)
+                all_texts = sum(self.restaurant_reviews[i:high], [])
+                counter += len(all_texts)
+                # print(type(all_texts[0]))
+                # print(len(all_texts), self.n_comments_total)
+                self.preprocessor.fit_texts(all_texts)
+                finish = time()
+                print(f"{counter} rests fitted", finish - start)
+            print("All texts are fitted!")
 
     @staticmethod
     def compute_similarity(vec1, vec2):
