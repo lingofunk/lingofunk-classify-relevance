@@ -74,6 +74,11 @@ class YELPSequence(Sequence):
         self.n_comments_total = sum(len(restaurant) for restaurant in self.restaurant_reviews)
         self.n_restaurants = len(self.restaurant_reviews)
         self.lens_restaurants = np.array(list(map(len, self.restaurant_reviews)))
+
+        self.lens_restaurants.sort()
+        print(self.n_restaurants[:100])
+
+
         self.batch_size = batch_size
         self.preprocessor = preproc
         self.test = test
