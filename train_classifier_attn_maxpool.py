@@ -14,7 +14,7 @@ import tensorflow as tf
 from keras.backend.tensorflow_backend import set_session
 from keras.preprocessing import text, sequence
 from keras.models import Model
-from keras.layers import Dense, Input, Bidirectional, LSTM, Embedding, Dropout, Add
+from keras.layers import Dense, Input, Bidirectional, LSTM, Embedding, Dropout, Add, Maximum
 from keras.layers.merge import concatenate
 from keras.layers.normalization import BatchNormalization
 from keras.callbacks import EarlyStopping, TensorBoard, ModelCheckpoint
@@ -57,7 +57,7 @@ def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, 
     embedding_layer_1 = emb_layer(input_1)
     embedding_layer_2 = emb_layer(input_2)
     # embedded_sequences = concatenate([embedding_layer_1, embedding_layer_2], axis=-1)
-    embedded_sequences = Add()([embedding_layer_1, embedding_layer_2])
+    embedded_sequences = Maximum()([embedding_layer_1, embedding_layer_2])
     x = Bidirectional(LSTM(lstm_size,
                            dropout=rate_drop_lstm,
                            recurrent_dropout=rate_drop_lstm,
@@ -126,14 +126,14 @@ def train():
                                    validation_steps=100, class_weight=None, max_queue_size=10000,
                                    workers=16, use_multiprocessing=True, shuffle=True, initial_epoch=0)
 
-        ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn.json")
+        ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn_max.json")
         logger.info(f"Saving the architecture: {ARCHITECTURE_FILE}")
 
         with open(ARCHITECTURE_FILE, "w") as file:
             architecture_json = model.to_json()
             file.write(architecture_json)
 
-        WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights_attn.h5")
+        WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights_attn_max.h5")
         logger.info(f"Saving the weights: {WEIGHTS_FILE}")
 
         model.save_weights(WEIGHTS_FILE)
