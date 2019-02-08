@@ -96,7 +96,7 @@ def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, 
     merged = Attention()(x)
     merged = Dense(DENSE_SIZE, activation=act)(merged)
     merged = Dropout(rate_drop_dense)(merged)
-    # merged = BatchNormalization()(merged)
+    merged = BatchNormalization()(merged)
     outputs = Dense(1, activation='sigmoid')(merged)
 
     model = Model(inputs=[input_1, input_2], outputs=outputs)
@@ -117,7 +117,7 @@ def train():
     PRERPOCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
     with open(PRERPOCESSOR_FILE, 'rb') as f:
         preprocesor = pickle.load(f)
-        yelp_dataset_generator = YELPSequence(batch_size=16, test=False, preproc=preprocesor)
+        yelp_dataset_generator = YELPSequence(batch_size=64, test=False, preproc=preprocesor)
         logger.info("Opened preprocessing file.")
     if yelp_dataset_generator is None:
         YELPSequence(batch_size=16, test=False)
@@ -143,10 +143,10 @@ def train():
 
     logger.info("Model created.")
 
-    hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=1, verbose=1, callbacks=None,
+    hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=2, verbose=1, callbacks=None,
                                validation_data=yelp_dataset_generator_val,
                                validation_steps=100, class_weight=None, max_queue_size=1000,
-                               workers=16, use_multiprocessing=False, shuffle=True, initial_epoch=0)
+                               workers=16, use_multiprocessing=True, shuffle=True, initial_epoch=0)
 
     early_stopping = EarlyStopping(monitor='val_loss', patience=5)
 
