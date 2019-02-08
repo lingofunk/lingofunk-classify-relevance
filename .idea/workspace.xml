@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="13d2616c-69b5-4e17-ae08-d8d642b6e6c7" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/train_classifier_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/train_classifier_attn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yelp_dataset_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/yelp_dataset_generator.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,10 +16,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/yelp_dataset_generator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="525">
+            <state relative-caret-position="840">
               <caret line="98" lean-forward="true" selection-start-line="98" selection-end-line="98" />
               <folding>
                 <element signature="e#24#33#0" expanded="true" />
@@ -29,11 +28,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/train_classifier_attn.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="125">
-              <caret line="123" lean-forward="true" selection-start-line="123" selection-end-line="123" />
+            <state relative-caret-position="560">
+              <caret line="157" column="74" selection-start-line="157" selection-start-column="74" selection-end-line="157" selection-end-column="74" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -96,8 +95,8 @@
         <option value="$PROJECT_DIR$/train_classifier.py" />
         <option value="$PROJECT_DIR$/traintest_generator.py" />
         <option value="$PROJECT_DIR$/predict.py" />
-        <option value="$PROJECT_DIR$/train_classifier_attn.py" />
         <option value="$PROJECT_DIR$/yelp_dataset_generator.py" />
+        <option value="$PROJECT_DIR$/train_classifier_attn.py" />
       </list>
     </option>
   </component>
@@ -229,12 +228,12 @@
       <workItem from="1549371325658" duration="11816000" />
       <workItem from="1549385373197" duration="12734000" />
       <workItem from="1549452954217" duration="8858000" />
-      <workItem from="1549521883104" duration="44372000" />
+      <workItem from="1549521883104" duration="44770000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="109263000" />
+    <option name="totallyTimeSpent" value="109661000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
@@ -403,22 +402,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/train_classifier_attn.py">
+    <entry file="file://$PROJECT_DIR$/yelp_dataset_generator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="123" lean-forward="true" selection-start-line="123" selection-end-line="123" />
+        <state relative-caret-position="840">
+          <caret line="98" lean-forward="true" selection-start-line="98" selection-end-line="98" />
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#24#33#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/yelp_dataset_generator.py">
+    <entry file="file://$PROJECT_DIR$/train_classifier_attn.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="98" lean-forward="true" selection-start-line="98" selection-end-line="98" />
+        <state relative-caret-position="560">
+          <caret line="157" column="74" selection-start-line="157" selection-start-column="74" selection-end-line="157" selection-end-column="74" />
           <folding>
-            <element signature="e#24#33#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>

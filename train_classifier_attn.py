@@ -45,7 +45,7 @@ RATE_DROP_DENSE = 0.25
 VALIDATION_SPLIT = 0.1
 TRAIN_SIZE = 1 - VALIDATION_SPLIT
 MAX_FEATURES = 100000
-BATCH_SIZE = 1024
+BATCH_SIZE = 128
 EPOCHS = 1
 act = "relu"
 
@@ -115,23 +115,28 @@ def train():
     logger.info(f"Transforming data")
 
     PRERPOCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
-    with open(PRERPOCESSOR_FILE, 'rb') as f:
-        preprocesor = pickle.load(f)
-        yelp_dataset_generator = YELPSequence(batch_size=128, test=False, preproc=preprocesor)
-        logger.info("Opened preprocessing file.")
-    if yelp_dataset_generator is None:
-        YELPSequence(batch_size=16, test=False)
+
+    try:
+        with open(PRERPOCESSOR_FILE, 'rb') as f:
+            preprocesor = pickle.load(f)
+            yelp_dataset_generator = YELPSequence(batch_size=BATCH_SIZE, test=False, preproc=preprocesor)
+            logger.info("Opened preprocessing file.")
+    except FileNotFoundError:
+        yelp_dataset_generator = YELPSequence(batch_size=BATCH_SIZE, test=False)
 
     logger.info(f"Saving the text transformer: {PRERPOCESSOR_FILE}")
+
     with open(PRERPOCESSOR_FILE, "wb") as file:
         pickle.dump(yelp_dataset_generator.preprocessor, file)
 
     word_index = yelp_dataset_generator.preprocessor.tokenizer.word_index
     embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBEDDING_DIM)
 
-    yelp_dataset_generator_val = YELPSequence(batch_size=128, test=True, preproc=yelp_dataset_generator.preprocessor)
+    yelp_dataset_generator_val = YELPSequence(batch_size=BATCH_SIZE,
+                                              test=True, preproc=yelp_dataset_generator.preprocessor)
 
     logger.info(f"Model training, train size: {TRAIN_SIZE}")
+
     """
     RocAuc = RocAucEvaluation(
         log_dir=LOG_PATH,
@@ -139,6 +144,7 @@ def train():
         interval=1,
     )
     """
+
     model = get_model(MAXLEN, MAX_FEATURES, LSTM_SIZE, RATE_DROP_LSTM, RATE_DROP_DENSE, EMBEDDING_DIM, embedding_matrix)
 
     logger.info("Model created.")
@@ -148,7 +154,7 @@ def train():
                                        save_weights_only=False, mode='auto', period=1)
 
     hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=10, verbose=1,
-                               callbacks=[early_stopping],
+                               callbacks=[early_stopping, model_checkpoint],
                                validation_data=yelp_dataset_generator_val,
                                validation_steps=100, class_weight=None, max_queue_size=10000,
                                workers=16, use_multiprocessing=True, shuffle=True, initial_epoch=0)
