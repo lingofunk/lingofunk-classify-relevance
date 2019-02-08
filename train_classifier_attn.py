@@ -151,7 +151,8 @@ def train():
     logger.info("Model created.")
 
     early_stopping = EarlyStopping(monitor='val_loss', patience=10)
-    model_checkpoint = ModelCheckpoint(MODEL_PATH, monitor='val_loss', verbose=1, save_best_only=True,
+    model_checkpoint = ModelCheckpoint(os.path.join(MODEL_PATH, "model_attn.h5"), monitor='val_loss',
+                                       verbose=1, save_best_only=True,
                                        save_weights_only=False, mode='auto', period=1)
 
     hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=10, verbose=1,
