@@ -151,7 +151,7 @@ class YELPSequence(Sequence):
 
             del negative_pairs, negative_examples, restaurant_comments, negative_comments
 
-        x_batch_l, x_batch_r, y_batch = skshuffle(x_batch_l, x_batch_r, y_batch, random_state=0)
+        # x_batch_l, x_batch_r, y_batch = skshuffle(x_batch_l, x_batch_r, y_batch, random_state=0)
 
         """
         if self.test and (idx % 10 == 0):
