@@ -117,7 +117,7 @@ def train():
     PRERPOCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
     with open(PRERPOCESSOR_FILE, 'rb') as f:
         preprocesor = pickle.load(f)
-        yelp_dataset_generator = YELPSequence(batch_size=64, test=False, preproc=preprocesor)
+        yelp_dataset_generator = YELPSequence(batch_size=128, test=False, preproc=preprocesor)
         logger.info("Opened preprocessing file.")
     if yelp_dataset_generator is None:
         YELPSequence(batch_size=16, test=False)
@@ -129,7 +129,7 @@ def train():
     word_index = yelp_dataset_generator.preprocessor.tokenizer.word_index
     embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBEDDING_DIM)
 
-    yelp_dataset_generator_val = YELPSequence(batch_size=1, test=True, preproc=yelp_dataset_generator.preprocessor)
+    yelp_dataset_generator_val = YELPSequence(batch_size=128, test=True, preproc=yelp_dataset_generator.preprocessor)
 
     logger.info(f"Model training, train size: {TRAIN_SIZE}")
     """
@@ -148,7 +148,7 @@ def train():
     hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=20, verbose=1,
                                callbacks=[early_stopping],
                                validation_data=yelp_dataset_generator_val,
-                               validation_steps=None, class_weight=None, max_queue_size=10000,
+                               validation_steps=100, class_weight=None, max_queue_size=10000,
                                workers=16, use_multiprocessing=True, shuffle=True, initial_epoch=0)
 
     ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn.json")
