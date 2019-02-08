@@ -87,7 +87,7 @@ def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, 
     emb_layer = Embedding(max_features, embed_size, weights=[embedding_matrix], trainable=False)
     embedding_layer_1 = emb_layer(input_1)
     embedding_layer_2 = emb_layer(input_2)
-    embedded_sequences = concatenate([embedding_layer_1, embedding_layer_2])
+    embedded_sequences = concatenate([embedding_layer_1, embedding_layer_2], axis=1)
     x = LSTM(lstm_size,
              dropout=rate_drop_lstm,
              recurrent_dropout=rate_drop_lstm,
@@ -143,12 +143,13 @@ def train():
 
     logger.info("Model created.")
 
-    hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=2, verbose=1, callbacks=None,
-                               validation_data=yelp_dataset_generator_val,
-                               validation_steps=100, class_weight=None, max_queue_size=1000,
-                               workers=16, use_multiprocessing=True, shuffle=True, initial_epoch=0)
+    early_stopping = EarlyStopping(monitor='val_loss', patience=10)
 
-    early_stopping = EarlyStopping(monitor='val_loss', patience=5)
+    hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=20, verbose=1,
+                               callbacks=[early_stopping],
+                               validation_data=yelp_dataset_generator_val,
+                               validation_steps=100, class_weight=None, max_queue_size=10000,
+                               workers=16, use_multiprocessing=True, shuffle=True, initial_epoch=0)
 
     ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn.json")
     logger.info(f"Saving the architecture: {ARCHITECTURE_FILE}")
