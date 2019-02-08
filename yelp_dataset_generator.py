@@ -14,6 +14,8 @@ from keras.utils import Sequence
 
 from utils import get_root
 
+from sklearn.utils import shuffle
+
 
 DIR_ROOT = get_root()
 DIR_ASSETS = os.path.join(DIR_ROOT, "assets")
@@ -147,6 +149,7 @@ class YELPSequence(Sequence):
 
             del negative_pairs, negative_examples, restaurant_comment_embeddings, negative_comment_embeddings
 
+        x_batch_l, x_batch_r, y_batch = shuffle(x_batch_l, x_batch_r, y_batch, random_state=0)
         if process_target:
             x_batch_l = self.preprocessor.transform_texts(x_batch_l)
             x_batch_r = self.preprocessor.transform_texts(x_batch_r)
