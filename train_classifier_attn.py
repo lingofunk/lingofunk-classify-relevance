@@ -148,7 +148,7 @@ def train():
     hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=20, verbose=1,
                                callbacks=[early_stopping],
                                validation_data=yelp_dataset_generator_val,
-                               validation_steps=100, class_weight=None, max_queue_size=10000,
+                               validation_steps=None, class_weight=None, max_queue_size=10000,
                                workers=16, use_multiprocessing=True, shuffle=True, initial_epoch=0)
 
     ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn.json")
