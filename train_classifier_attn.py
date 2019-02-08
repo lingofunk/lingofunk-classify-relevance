@@ -10,6 +10,8 @@ from bpemb import BPEmb
 
 from sklearn.model_selection import train_test_split
 
+import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
 from keras.preprocessing import text, sequence
 from keras.models import Model
 from keras.layers import Dense, Input, LSTM, Embedding, Dropout
@@ -82,7 +84,7 @@ class RocAucEvaluation(TensorBoard):
 def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, embed_size, embedding_matrix):
     input_1 = Input(shape=(maxlen,))
     input_2 = Input(shape=(maxlen,))
-    emb_layer = Embedding(max_features, embed_size, weights=[embedding_matrix])
+    emb_layer = Embedding(max_features, embed_size, weights=[embedding_matrix], )
     embedding_layer_1 = emb_layer(input_1)
     embedding_layer_2 = emb_layer(input_2)
     embedded_sequences = concatenate([embedding_layer_1, embedding_layer_2])
@@ -105,6 +107,10 @@ def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, 
 
 
 def train():
+    config = tf.ConfigProto()
+    config.gpu_options.per_process_gpu_memory_fraction = 0.5
+    set_session(tf.Session(config=config))
+
     logger = get_logger()
     logger.info(f"Transforming data")
 
