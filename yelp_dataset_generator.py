@@ -75,10 +75,6 @@ class YELPSequence(Sequence):
         self.n_restaurants = len(self.restaurant_reviews)
         self.lens_restaurants = np.array(list(map(len, self.restaurant_reviews)))
 
-        self.lens_restaurants.sort()
-        print(self.lens_restaurants[-100:])
-
-
         self.batch_size = batch_size
         self.preprocessor = preproc
         self.test = test

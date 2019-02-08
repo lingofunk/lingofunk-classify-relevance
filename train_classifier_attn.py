@@ -117,7 +117,7 @@ def train():
                                        save_weights_only=False, mode='auto', period=1)
 
     wanna_train = True
-    n_epochs = 10
+    n_epochs = 2
 
     while wanna_train:
         hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=n_epochs, verbose=1,
