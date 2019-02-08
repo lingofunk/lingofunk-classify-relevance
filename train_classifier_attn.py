@@ -106,23 +106,15 @@ def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, 
 
 def train():
     logger = get_logger()
-
     logger.info(f"Transforming data")
 
-    yelp_dataset_generator = YELPSequence(batch_size=128)
-
     PRERPOCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
-
-    try:
-        print("PREPROC")
-        with open(PRERPOCESSOR_FILE, 'rb') as f:
-            preprocesor = pickle.load(f)
-            print("PREPROC_____")
-            yelp_dataset_generator.preprocess(preprocesor)
-
-            logger.info("Opened preprocessing file.")
-    except:
-        yelp_dataset_generator.preprocess()
+    with open(PRERPOCESSOR_FILE, 'rb') as f:
+        preprocesor = pickle.load(f)
+        yelp_dataset_generator = YELPSequence(batch_size=16, test=False, preprocesor=preprocesor)
+        logger.info("Opened preprocessing file.")
+    if yelp_dataset_generator is None:
+        YELPSequence(batch_size=16, test=False)
 
     logger.info(f"Saving the text transformer: {PRERPOCESSOR_FILE}")
     with open(PRERPOCESSOR_FILE, "wb") as file:
@@ -131,8 +123,7 @@ def train():
     word_index = yelp_dataset_generator.preprocessor.tokenizer.word_index
     embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBEDDING_DIM)
 
-    yelp_dataset_generator_val = YELPSequenceTest(batch_size=128)
-    yelp_dataset_generator_val.preprocess(yelp_dataset_generator.preprocessor)
+    yelp_dataset_generator_val = YELPSequence(batch_size=16, test=True)
 
     logger.info(f"Model training, train size: {TRAIN_SIZE}")
     """

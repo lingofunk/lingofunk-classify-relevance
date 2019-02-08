@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="13d2616c-69b5-4e17-ae08-d8d642b6e6c7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/train_classifier_attn.py" beforeDir="false" afterPath="$PROJECT_DIR$/train_classifier_attn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yelp_dataset_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/yelp_dataset_generator.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,11 +17,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/yelp_dataset_generator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="620">
-              <caret line="226" column="12" lean-forward="true" selection-start-line="226" selection-start-column="12" selection-end-line="226" selection-end-column="12" />
+            <state relative-caret-position="-495">
               <folding>
                 <element signature="e#24#33#0" expanded="true" />
               </folding>
@@ -28,11 +28,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/train_classifier_attn.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="800">
-              <caret line="150" column="89" selection-start-line="150" selection-start-column="89" selection-end-line="150" selection-end-column="89" />
+            <state relative-caret-position="470">
+              <caret line="116" column="35" selection-start-line="116" selection-start-column="35" selection-end-line="116" selection-end-column="35" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -89,8 +89,8 @@
       <find>trans</find>
       <find>pri</find>
       <find>embed_</find>
-      <find>fit</find>
       <find>epochs</find>
+      <find>fit</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -114,8 +114,8 @@
         <option value="$PROJECT_DIR$/train_classifier.py" />
         <option value="$PROJECT_DIR$/traintest_generator.py" />
         <option value="$PROJECT_DIR$/predict.py" />
-        <option value="$PROJECT_DIR$/train_classifier_attn.py" />
         <option value="$PROJECT_DIR$/yelp_dataset_generator.py" />
+        <option value="$PROJECT_DIR$/train_classifier_attn.py" />
       </list>
     </option>
   </component>
@@ -247,12 +247,12 @@
       <workItem from="1549371325658" duration="11816000" />
       <workItem from="1549385373197" duration="12734000" />
       <workItem from="1549452954217" duration="8858000" />
-      <workItem from="1549521883104" duration="30162000" />
+      <workItem from="1549521883104" duration="31064000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="95053000" />
+    <option name="totallyTimeSpent" value="95955000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
@@ -421,22 +421,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/train_classifier_attn.py">
+    <entry file="file://$PROJECT_DIR$/yelp_dataset_generator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="800">
-          <caret line="150" column="89" selection-start-line="150" selection-start-column="89" selection-end-line="150" selection-end-column="89" />
+        <state relative-caret-position="-495">
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#24#33#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/yelp_dataset_generator.py">
+    <entry file="file://$PROJECT_DIR$/train_classifier_attn.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="620">
-          <caret line="226" column="12" lean-forward="true" selection-start-line="226" selection-start-column="12" selection-end-line="226" selection-end-column="12" />
+        <state relative-caret-position="470">
+          <caret line="116" column="35" selection-start-line="116" selection-start-column="35" selection-end-line="116" selection-end-column="35" />
           <folding>
-            <element signature="e#24#33#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
