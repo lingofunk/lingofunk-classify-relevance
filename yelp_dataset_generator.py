@@ -14,7 +14,7 @@ from keras.utils import Sequence
 
 from utils import get_root
 
-from sklearn.utils import shuffle
+from sklearn.utils import shuffle as skshuffle
 
 
 DIR_ROOT = get_root()
@@ -110,7 +110,7 @@ class YELPSequence(Sequence):
             probs[i] = 0
 
             # 1
-            n_positive_examples = np.random.random_integers(2, max(3, n_comments // 100))
+            n_positive_examples = np.random.random_integers(2)
             positive_examples = np.random.random_integers(low=0, high=n_comments - 1, size=(n_positive_examples, 2))
             for ex in positive_examples:
                 x_batch_l.append(self.restaurant_reviews[i][ex[0]])
@@ -119,7 +119,7 @@ class YELPSequence(Sequence):
             del positive_examples
 
             # 0
-            n_negative_examples = 3 * np.random.random_integers(2, max(3, n_comments // 100))
+            n_negative_examples = 3 * np.random.random_integers(2)
             negative_restaurants = np.random.choice(self.n_restaurants, n_negative_examples, p=probs)
             negative_examples = []
             for restaurant in negative_restaurants:
@@ -127,9 +127,6 @@ class YELPSequence(Sequence):
                 # print("COMMENT:\n" + comment + '***************\n')
                 negative_examples.append(str(comment))
             del negative_restaurants
-            print("RS: ", type(self.restaurant_reviews[i]), type(self.restaurant_reviews[i][0]))
-            print("NC: ", type(negative_examples), type(negative_examples[0]))
-
             restaurant_comments = self.preprocessor.transform_texts(self.restaurant_reviews[i])
             negative_comments = self.preprocessor.transform_texts(negative_examples)
 
@@ -154,7 +151,7 @@ class YELPSequence(Sequence):
 
             del negative_pairs, negative_examples, restaurant_comments, negative_comments
 
-        x_batch_l, x_batch_r, y_batch = shuffle(x_batch_l, x_batch_r, y_batch, random_state=0)
+        x_batch_l, x_batch_r, y_batch = skshuffle(x_batch_l, x_batch_r, y_batch, random_state=0)
 
         """
         if self.test and (idx % 10 == 0):
