@@ -150,28 +150,38 @@ def train():
 
     logger.info("Model created.")
 
-    early_stopping = EarlyStopping(monitor='val_loss', patience=10)
+    early_stopping = EarlyStopping(monitor='val_loss', patience=5)
     model_checkpoint = ModelCheckpoint(os.path.join(MODEL_PATH, "model_attn.h5"), monitor='val_loss',
                                        verbose=1, save_best_only=True,
                                        save_weights_only=False, mode='auto', period=1)
 
-    hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=10, verbose=1,
-                               callbacks=[early_stopping, model_checkpoint],
-                               validation_data=yelp_dataset_generator_val,
-                               validation_steps=100, class_weight=None, max_queue_size=10000,
-                               workers=16, use_multiprocessing=True, shuffle=True, initial_epoch=0)
+    wanna_train = True
+    n_epochs = 10
 
-    ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn.json")
-    logger.info(f"Saving the architecture: {ARCHITECTURE_FILE}")
+    while wanna_train:
+        hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=n_epochs, verbose=1,
+                                   callbacks=[early_stopping, model_checkpoint],
+                                   validation_data=yelp_dataset_generator_val,
+                                   validation_steps=100, class_weight=None, max_queue_size=10000,
+                                   workers=16, use_multiprocessing=True, shuffle=True, initial_epoch=0)
 
-    with open(ARCHITECTURE_FILE, "w") as file:
-        architecture_json = model.to_json()
-        file.write(architecture_json)
+        ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn.json")
+        logger.info(f"Saving the architecture: {ARCHITECTURE_FILE}")
 
-    WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights_attn.h5")
-    logger.info(f"Saving the weights: {WEIGHTS_FILE}")
+        with open(ARCHITECTURE_FILE, "w") as file:
+            architecture_json = model.to_json()
+            file.write(architecture_json)
 
-    model.save_weights(WEIGHTS_FILE)
+        WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights_attn.h5")
+        logger.info(f"Saving the weights: {WEIGHTS_FILE}")
+
+        model.save_weights(WEIGHTS_FILE)
+
+        ans = int(input("How many epochs more?"))
+        if ans == 0:
+            wanna_train = False
+        else:
+            n_epochs = ans
 
 
 if __name__ == "__main__":
