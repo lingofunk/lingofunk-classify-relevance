@@ -124,6 +124,7 @@ class YELPSequence(Sequence):
             negative_examples = []
             for restaurant in negative_restaurants:
                 comment = np.random.choice(self.restaurant_reviews[restaurant])
+                print(type(comment))
                 negative_examples.extend(comment)
             del negative_restaurants
             restaurant_comments = self.preprocessor.transform_texts(self.restaurant_reviews[i])
@@ -153,7 +154,7 @@ class YELPSequence(Sequence):
         x_batch_l, x_batch_r, y_batch = shuffle(x_batch_l, x_batch_r, y_batch, random_state=0)
 
         if self.test and (idx % 10 == 0):
-            out = open("some_examples.txt", "a")
+            out = open("some_examples.txt", "w")
             out.write(str(idx) + "\n")
             out.write(x_batch_l[0] + "^^^^^^\n")
             out.write(x_batch_r[0] + "^^^^^^\n")
