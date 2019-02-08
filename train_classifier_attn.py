@@ -78,7 +78,7 @@ def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, 
 
 def train():
     config = tf.ConfigProto()
-    config.gpu_options.per_process_gpu_memory_fraction = 0.75
+    config.gpu_options.per_process_gpu_memory_fraction = 0.5
     set_session(tf.Session(config=config))
 
     logger = get_logger()
@@ -117,7 +117,7 @@ def train():
                                        save_weights_only=False, mode='auto', period=1)
 
     wanna_train = True
-    n_epochs = 2
+    n_epochs = 250
 
     while wanna_train:
         hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=n_epochs, verbose=1,
