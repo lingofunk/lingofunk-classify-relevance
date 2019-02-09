@@ -9,7 +9,7 @@ from train_classifier_attn import *
 from utils import get_root, load_pipeline_stages
 
 ROOT = get_root()
-MODEL_PATH = os.path.join(ROOT, "yelp-data", "model")
+MODEL_PATH = os.path.join(ROOT, "assets", "model")
 PREPROCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
 ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn.json")
 WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights_attn.h5")
