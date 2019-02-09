@@ -11,7 +11,7 @@ from train_classifier import Preprocess  # for unpickling to work properly
 
 
 ROOT = get_root()
-MODEL_PATH = os.path.join(ROOT, "assets", "model")
+MODEL_PATH = os.path.join(ROOT, "yelp-data", "model")
 PREPROCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
 ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn.json")
 WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights_attn.h5")
@@ -21,14 +21,14 @@ class PredictionPipeline(object):
     def __init__(self, preprocessor, model):
         self.preprocessor = preprocessor
         self.model = model
+        self.graph = tf.get_default_graph()
 
     def predict(self, sent):
-        features_0 = sent[0]
-        features_1 = sent[1]
-        features_0 = self.preprocessor.transform_texts(features_0)
-        features_1 = self.preprocessor.transform_texts(features_1)
+        with self.graph.as_default():
+            features_0 = self.preprocessor.transform_texts(sent[0])
+            features_1 = self.preprocessor.transform_texts(sent[1])
 
-        return self.model.predict([features_0, features_1])
+            return self.model.predict([features_0, features_1])
 
 
 def load_pipeline():
