@@ -1,10 +1,5 @@
-#! /usr/bin/env python
-
-import gc
-import os
 import numpy as np
 import pandas as pd
-from time import time
 
 from bpemb import BPEmb
 from keras.preprocessing import text, sequence
@@ -12,16 +7,9 @@ from scipy.spatial.distance import cosine
 
 from keras.utils import Sequence
 
-from utils import get_root
+from utils import *
 
 from sklearn.utils import shuffle as skshuffle
-
-
-DIR_ROOT = get_root()
-DIR_ASSETS = os.path.join(DIR_ROOT, "assets")
-DATA_DIR = os.path.join(DIR_ROOT, "yelp-data")
-PATH_TO_YELP_CSV_TRAIN = os.path.join(DATA_DIR, "reviews_train.csv")
-PATH_TO_YELP_CSV_TEST = os.path.join(DATA_DIR, "reviews_test.csv")
 
 MAX_FEATURES = 100000
 MAXLEN = 100
@@ -81,21 +69,13 @@ class YELPSequence(Sequence):
         self.preprocess()
 
     def preprocess(self):
-        print("^^^^^^^^^^^^^")
         # train mode
         if (self.preprocessor is None) and not self.test:
             self.preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
-            counter = 0
             for i in range(0, self.n_restaurants, 5000):
-                start = time()
                 high = min(i + 5000, self.n_restaurants)
                 all_texts = sum(self.restaurant_reviews[i:high], [])
-                counter += len(all_texts)
-                # print(type(all_texts[0]))
-                # print(len(all_texts), self.n_comments_total)
                 self.preprocessor.fit_texts(all_texts)
-                finish = time()
-                print(f"{counter} rests fitted", finish - start)
             print("All texts are fitted!")
 
     @staticmethod
@@ -105,7 +85,7 @@ class YELPSequence(Sequence):
     def __len__(self):
         return int(np.ceil(self.n_restaurants / self.batch_size))
 
-    def __getitem__(self, idx, process_target=True):
+    def __getitem__(self, idx):
         idx_start = self.batch_size * idx
         idx_end = self.batch_size * (idx + 1)
         x_batch_l = []
@@ -160,21 +140,6 @@ class YELPSequence(Sequence):
 
         x_batch_l, x_batch_r, y_batch = skshuffle(x_batch_l, x_batch_r, y_batch, random_state=0)
 
-        """
-        if self.test and (idx % 10 == 0):
-            out = open("some_examples.txt", "w")
-            out.write(str(idx) + "\n")
-            out.write(x_batch_l[0] + "^^^^^^\n")
-            out.write(x_batch_r[0] + "^^^^^^\n")
-            out.write(str(y_batch[0]) + "^^^^^^\n")
-            out.write("*" * 20 + "\n")
-        """
-
-        if process_target:
-            x_batch_l = self.preprocessor.transform_texts(x_batch_l)
-            x_batch_r = self.preprocessor.transform_texts(x_batch_r)
-            return [x_batch_l, x_batch_r], y_batch
-        else:
-            x_batch_l = self.preprocessor.transform_texts(x_batch_l)
-            x_batch_r = self.preprocessor.transform_texts(x_batch_r)
-            return [x_batch_l, x_batch_r]
+        x_batch_l = self.preprocessor.transform_texts(x_batch_l)
+        x_batch_r = self.preprocessor.transform_texts(x_batch_r)
+        return [x_batch_l, x_batch_r], y_batch

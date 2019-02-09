@@ -1,11 +1,6 @@
-#! /usr/bin/env python
-
-from train_classifier_attn import *
-
-DIR_ROOT = get_root()
-DIR_ASSETS = os.path.join(DIR_ROOT, "assets")
-DATA_DIR = os.path.join(DIR_ROOT, "yelp-data")
-PATH_TO_YELP_CSV = os.path.join(DATA_DIR, "restaurant_reviews.csv")
+from utils import *
+import pandas as pd
+from sklearn.model_selection import train_test_split
 
 np.random.seed(42)
 

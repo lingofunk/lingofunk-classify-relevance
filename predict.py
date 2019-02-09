@@ -7,8 +7,6 @@ import os
 from train_classifier_attn import *
 
 from utils import get_root, load_pipeline_stages
-from train_classifier import Preprocess  # for unpickling to work properly
-
 
 ROOT = get_root()
 MODEL_PATH = os.path.join(ROOT, "yelp-data", "model")
@@ -35,6 +33,14 @@ def load_pipeline():
     return PredictionPipeline(
         *load_pipeline_stages(PREPROCESSOR_FILE, ARCHITECTURE_FILE, WEIGHTS_FILE)
     )
+
+
+class ReviewComparer:
+    def __init__(self):
+        self.ppl = load_pipeline()
+
+    def answer_query(self, review1: str, review2: str):
+        return self.ppl.predict([[review1], [review2]])[0][0]
 
 
 if __name__ == "__main__":

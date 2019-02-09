@@ -1,11 +1,9 @@
-#! /usr/bin/env python
-
+import os
 import logging
 from pathlib import Path
 import pickle
-import Attention
+from Attention import Attention
 from keras.models import model_from_json
-from keras.utils import CustomObjectScope
 
 
 def get_root():
@@ -44,7 +42,17 @@ def load_pipeline_stages(preprocessor_file, architecture_file, weights_file):
     json_file = open(architecture_file, 'r')
     loaded_model_json = json_file.read()
     json_file.close()
-    loaded_model = model_from_json(loaded_model_json, custom_objects={'Attention': Attention.Attention})
+    loaded_model = model_from_json(loaded_model_json, custom_objects={'Attention': Attention})
     loaded_model.load_weights(weights_file)
     print("Loaded Model from disk")
     return preprocessor, loaded_model
+
+
+DIR_ROOT = get_root()
+DIR_ASSETS = os.path.join(DIR_ROOT, "assets")
+DATA_DIR = os.path.join(DIR_ROOT, "yelp-data")
+MODEL_PATH = os.path.join(DIR_ASSETS, "model")
+LOG_PATH = os.path.join(DIR_ASSETS, "tb_logs")
+PATH_TO_YELP_CSV = os.path.join(DATA_DIR, "restaurant_reviews.csv")
+PATH_TO_YELP_CSV_TRAIN = os.path.join(DATA_DIR, "reviews_train.csv")
+PATH_TO_YELP_CSV_TEST = os.path.join(DATA_DIR, "reviews_test.csv")

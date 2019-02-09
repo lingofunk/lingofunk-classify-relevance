@@ -1,27 +1,11 @@
-import gc
-import os
-import pickle
 import warnings
-
-import numpy as np
-import pandas as pd
-
-from bpemb import BPEmb
-
-from sklearn.model_selection import train_test_split
 
 import tensorflow as tf
 from keras.backend.tensorflow_backend import set_session
-from keras.preprocessing import text, sequence
 from keras.models import Model
 from keras.layers import Dense, Input, Bidirectional, LSTM, Embedding, Dropout, Add
-from keras.layers.merge import concatenate
 from keras.layers.normalization import BatchNormalization
-from keras.callbacks import EarlyStopping, TensorBoard, ModelCheckpoint
-
-from Attention import Attention
-
-from utils import get_logger, get_root
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 from yelp_dataset_generator import *
 
@@ -30,10 +14,9 @@ np.random.seed(42)
 warnings.filterwarnings("ignore")
 os.environ["OMP_NUM_THREADS"] = "4"
 
-DIR_ROOT = get_root()
-DIR_ASSETS = os.path.join(DIR_ROOT, "assets")
-MODEL_PATH = os.path.join(DIR_ASSETS, "model")
-LOG_PATH = os.path.join(DIR_ASSETS, "tb_logs")
+PREPROCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
+ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn.json")
+WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights_attn.h5")
 
 MAX_SEQUENCE_LENGTH = 150
 MAX_NB_WORDS = 100000
@@ -42,8 +25,6 @@ DENSE_SIZE = 256
 LSTM_SIZE = 300
 RATE_DROP_LSTM = 0.25
 RATE_DROP_DENSE = 0.25
-VALIDATION_SPLIT = 0.1
-TRAIN_SIZE = 1 - VALIDATION_SPLIT
 MAX_FEATURES = 100000
 BATCH_SIZE = 128
 EPOCHS = 1
@@ -84,19 +65,17 @@ def train():
     logger = get_logger()
     logger.info(f"Transforming data")
 
-    PRERPOCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
-
     try:
-        with open(PRERPOCESSOR_FILE, 'rb') as f:
-            preprocesor = pickle.load(f)
-            yelp_dataset_generator = YELPSequence(batch_size=BATCH_SIZE, test=False, preproc=preprocesor)
+        with open(PREPROCESSOR_FILE, 'rb') as f:
+            preprocessor = pickle.load(f)
+            yelp_dataset_generator = YELPSequence(batch_size=BATCH_SIZE, test=False, preproc=preprocessor)
             logger.info("Opened preprocessing file.")
     except FileNotFoundError:
         yelp_dataset_generator = YELPSequence(batch_size=BATCH_SIZE, test=False)
 
-    logger.info(f"Saving the text transformer: {PRERPOCESSOR_FILE}")
+    logger.info(f"Saving the text transformer: {PREPROCESSOR_FILE}")
 
-    with open(PRERPOCESSOR_FILE, "wb") as file:
+    with open(PREPROCESSOR_FILE, "wb") as file:
         pickle.dump(yelp_dataset_generator.preprocessor, file)
 
     word_index = yelp_dataset_generator.preprocessor.tokenizer.word_index
@@ -104,8 +83,6 @@ def train():
 
     yelp_dataset_generator_val = YELPSequence(batch_size=BATCH_SIZE,
                                               test=True, preproc=yelp_dataset_generator.preprocessor)
-
-    logger.info(f"Model training, train size: {TRAIN_SIZE}")
 
     model = get_model(MAXLEN, MAX_FEATURES, LSTM_SIZE, RATE_DROP_LSTM, RATE_DROP_DENSE, EMBEDDING_DIM, embedding_matrix)
 
@@ -126,16 +103,13 @@ def train():
                                    validation_steps=100, class_weight=None, max_queue_size=10000,
                                    workers=16, use_multiprocessing=True, shuffle=True, initial_epoch=0)
 
-        ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn.json")
         logger.info(f"Saving the architecture: {ARCHITECTURE_FILE}")
 
         with open(ARCHITECTURE_FILE, "w") as file:
             architecture_json = model.to_json()
             file.write(architecture_json)
 
-        WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights_attn.h5")
         logger.info(f"Saving the weights: {WEIGHTS_FILE}")
-
         model.save_weights(WEIGHTS_FILE)
 
         ans = int(input("How many epochs more?"))

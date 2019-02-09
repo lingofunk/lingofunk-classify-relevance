@@ -11,14 +11,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-class ReviewComparer:
-    def __init__(self):
-        self.ppl = load_pipeline()
-
-    def answer_query(self, review1: str, review2: str):
-        return self.ppl.predict([[review1], [review2]])[0][0]
-
-
 class Server:
     def __init__(self, app: Flask, review_comparer: ReviewComparer, port: int):
         self._app = app
