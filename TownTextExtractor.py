@@ -1,21 +1,21 @@
 from predict import *
+import time
+import pickle
+import os
 
 DATASET_CSV = os.path.join(DATA_DIR, "Brooklyn_dataset.csv")
 
 
 class TownTextExtractor:
-    def __init__(self):
+    def __init__(self, similarity_matrix=None):
         self.restaurant_reviews = pd.read_csv(DATASET_CSV, sep="\\")
 
-        self.restaurant_reviews = self.restaurant_reviews.groupby(["business_id"]).agg({"text": list})
+        self.restaurant_reviews = self.restaurant_reviews.groupby(["business_id"]).agg({"business_id": tuple, "text": list})
 
-        self.id2rest = self.restaurant_reviews["business_id"].values
+        self.id2rest = list(map(lambda x: x[0], self.restaurant_reviews["business_id"].values))
         self.rest2id = dict()
         for i, rest in enumerate(self.id2rest):
             self.rest2id[rest] = i
-
-        print(self.rest2id)
-        print(self.id2rest)
 
         self.restaurant_reviews = self.restaurant_reviews["text"].values
         self.n_comments_total = sum(len(restaurant) for restaurant in self.restaurant_reviews)
@@ -24,26 +24,37 @@ class TownTextExtractor:
 
         self.comparer = ReviewComparer()
 
-        self.similarity_matrix = np.zeros(shape=(self.n_restaurants, self.n_restaurants))
+        if similarity_matrix is not None:
+            self.similarity_matrix = similarity_matrix
+        else:
+            self.similarity_matrix = np.zeros(shape=(self.n_restaurants, self.n_restaurants))
         self.uniqueness = np.zeros(shape=(self.n_restaurants,))
         self.uniqueness_args = np.zeros(shape=(self.n_restaurants,))
         self.uniqueness_sorted = np.zeros(shape=(self.n_restaurants,))
+        self.n_total = 0
 
     def compute_similarity_matrix(self):
+        total_time = 0
         for i in range(self.n_restaurants):
             restaurants_i = self.restaurant_reviews[i]
-            for j in range(self.n_restaurants):
+            for j in range(i + 1, self.n_restaurants):
+                start = time.time()
                 n_ij = self.lens_restaurants[i] * self.lens_restaurants[j]
-                sim_ij = 0
                 restaurants_j = self.restaurant_reviews[j]
                 for r_i in restaurants_i:
                     for r_j in restaurants_j:
-                        sim_ij += self.comparer.answer_query(r_i, r_j)
-                sim_ij /= n_ij
-                self.similarity_matrix[i][j] = sim_ij
+                        self.similarity_matrix[i][j] += self.comparer.answer_query(r_i, r_j)
+                self.similarity_matrix[i][j] /= n_ij
+                self.similarity_matrix[j][i] = self.similarity_matrix[i][j]
+                finish = time.time()
+                self.n_total += n_ij
+                print(i, j, '\t\t', n_ij, finish - start)
+                total_time += finish - start
         self.uniqueness = np.sum(self.similarity_matrix)
         self.uniqueness_args = np.argsort(self.uniqueness)
         self.uniqueness_sorted = self.uniqueness[self.uniqueness_args]
+        pickle.dump(self.similarity_matrix, os.path.join(DATA_DIR, "town_similarity_matrix.pkl"))
+        print("TIME: ", total_time)
 
     def get_heatmap_for_restaurant_id(self, i):
         return self.similarity_matrix[i] / sum(self.similarity_matrix[i])
@@ -61,3 +72,8 @@ class TownTextExtractor:
 
     def get_unique_restaurants(self):
         return zip(self.uniqueness_args, self.uniqueness_sorted)
+
+
+tte = TownTextExtractor()
+tte.compute_similarity_matrix()
+print(tte.n_total)
