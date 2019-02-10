@@ -60,7 +60,7 @@ def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, 
 
 def train():
     config = tf.ConfigProto()
-    config.gpu_options.per_process_gpu_memory_fraction = 0.25
+    config.gpu_options.per_process_gpu_memory_fraction = 0.2
     set_session(tf.Session(config=config))
 
     logger = get_logger()
