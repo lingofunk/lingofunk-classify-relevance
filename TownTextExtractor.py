@@ -59,6 +59,9 @@ class TownTextExtractor:
     def load_similarity_matrix(self):
         inp = open(os.path.join(DATA_DIR, "town_similarity_matrix.pkl"), "rb")
         self.similarity_matrix = pickle.load(inp)
+        self.uniqueness = np.sum(self.similarity_matrix)
+        self.uniqueness_args = np.argsort(self.uniqueness)
+        self.uniqueness_sorted = np.sort(self.uniqueness)
 
     def get_heatmap_for_restaurant_id(self, i):
         return self.similarity_matrix[i] / sum(self.similarity_matrix[i])
@@ -79,5 +82,8 @@ class TownTextExtractor:
 
 
 tte = TownTextExtractor()
-tte.compute_similarity_matrix()
-print(tte.n_total)
+# run this once
+# tte.compute_similarity_matrix()
+tte.load_similarity_matrix()
+
+

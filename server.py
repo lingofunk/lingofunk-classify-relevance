@@ -21,9 +21,12 @@ class Server:
     def run_comparer(self):
         if request.method == "POST":
             data = request.get_json()
+            print(data)
             reviews = [data["review1"], data["review2"]]
+            print(reviews)
 
             similarity = self._review_comparer.answer_query(reviews[0], reviews[1])
+            print(similarity)
             return jsonify(text=str(similarity))
         else:
             return Response(status=501)

@@ -3,7 +3,7 @@ import warnings
 import tensorflow as tf
 from keras.backend.tensorflow_backend import set_session
 from keras.models import Model
-from keras.layers import Dense, Input, Bidirectional, LSTM, Embedding, Dropout, Add
+from keras.layers import Dense, Input, Bidirectional, LSTM, Embedding, Dropout, Add, Subtract
 from keras.layers.normalization import BatchNormalization
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 
@@ -15,8 +15,8 @@ warnings.filterwarnings("ignore")
 os.environ["OMP_NUM_THREADS"] = "4"
 
 PREPROCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
-ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn.json")
-WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights_attn.h5")
+ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn_sub.json")
+WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights_attn_sub.h5")
 
 MAX_SEQUENCE_LENGTH = 150
 MAX_NB_WORDS = 100000
@@ -39,7 +39,7 @@ def get_model(maxlen, max_features, lstm_size, rate_drop_lstm, rate_drop_dense, 
     embedding_layer_2 = emb_layer(input_2)
     # embedded_sequences = concatenate([embedding_layer_1, embedding_layer_2], axis=-1)
     # embedded_sequences = Add()([embedding_layer_1, embedding_layer_2])
-    embedded_sequences = Add()([embedding_layer_1, embedding_layer_2])
+    embedded_sequences = Subtract()([embedding_layer_1, embedding_layer_2])
     x = Bidirectional(LSTM(lstm_size,
                            dropout=rate_drop_lstm,
                            recurrent_dropout=rate_drop_lstm,
@@ -90,7 +90,7 @@ def train():
     logger.info("Model created.")
 
     early_stopping = EarlyStopping(monitor='val_loss', patience=5)
-    model_checkpoint = ModelCheckpoint(os.path.join(MODEL_PATH, "model_attn.h5"), monitor='val_loss',
+    model_checkpoint = ModelCheckpoint(os.path.join(MODEL_PATH, "model_attn_sub.h5"), monitor='val_loss',
                                        verbose=1, save_best_only=True,
                                        save_weights_only=False, mode='auto', period=1)
 
