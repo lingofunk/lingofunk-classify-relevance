@@ -6,7 +6,7 @@ from os.path import expanduser, exists
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import Model
-from keras.layers import Input, TimeDistributed, Dense, Lambda, concatenate, Dropout, BatchNormalization
+from keras.layers import Input, TimeDistributed, Dense, Lambda, concatenate, Dropout, BatchNormalization, MaxPool2D
 from keras.layers.embeddings import Embedding
 from keras.callbacks import Callback, ModelCheckpoint
 from keras.utils.data_utils import get_file
@@ -16,7 +16,7 @@ import warnings
 import tensorflow as tf
 from keras.backend.tensorflow_backend import set_session
 from keras.models import Model
-from keras.layers import Dense, Input, Bidirectional, LSTM, Embedding, Dropout, Add
+from keras.layers import Dense, Input, Bidirectional, LSTM, Embedding, Dropout, Add, GlobalMaxPooling1D, Subtract
 from keras.layers.normalization import BatchNormalization
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 
@@ -37,8 +37,8 @@ BATCH_SIZE = 128
 OPTIMIZER = 'adam'
 
 PREPROCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
-ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "architecture_quora.json")
-WEIGHTS_FILE = os.path.join(MODEL_PATH, "weights_quora.h5")
+ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "architecture_quora2.json")
+WEIGHTS_FILE = os.path.join(MODEL_PATH, "weights_quora2.h5")
 
 
 def get_model(maxlen, max_features, dropout, dense_size, embed_size, embedding_matrix):
@@ -49,11 +49,12 @@ def get_model(maxlen, max_features, dropout, dense_size, embed_size, embedding_m
     embedding_layer_2 = emb_layer(input_2)
 
     q1 = TimeDistributed(Dense(embed_size, activation='relu'))(embedding_layer_1)
-    q1 = Lambda(lambda x: K.max(x, axis=1), output_shape=(embed_size,))(q1)
+    q1 = GlobalMaxPooling1D(data_format='channels_last')(q1)
     q2 = TimeDistributed(Dense(embed_size, activation='relu'))(embedding_layer_2)
-    q2 = Lambda(lambda x: K.max(x, axis=1), output_shape=(embed_size,))(q2)
+    q2 = GlobalMaxPooling1D(data_format='channels_last')(q2)
 
     merged = concatenate([q1, q2])
+
     merged = Dense(dense_size, activation='relu')(merged)
     merged = Dropout(dropout)(merged)
     merged = BatchNormalization()(merged)
@@ -78,7 +79,7 @@ def get_model(maxlen, max_features, dropout, dense_size, embed_size, embedding_m
 
 def train():
     config = tf.ConfigProto()
-    config.gpu_options.per_process_gpu_memory_fraction = 0.5
+    config.gpu_options.per_process_gpu_memory_fraction = 0.75
     set_session(tf.Session(config=config))
 
     logger = get_logger()
@@ -108,7 +109,7 @@ def train():
     logger.info("Model created.")
 
     early_stopping = EarlyStopping(monitor='val_loss', patience=5)
-    model_checkpoint = ModelCheckpoint(os.path.join(MODEL_PATH, "model_quora.h5"), monitor='val_loss',
+    model_checkpoint = ModelCheckpoint(os.path.join(MODEL_PATH, "model_quora2.h5"), monitor='val_loss',
                                        verbose=1, save_best_only=True,
                                        save_weights_only=False, mode='auto', period=1)
 
