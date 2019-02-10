@@ -107,7 +107,7 @@ def train():
 
     logger.info("Model created.")
 
-    early_stopping = EarlyStopping(monitor='val_loss', patience=2)
+    early_stopping = EarlyStopping(monitor='val_loss', patience=5)
     model_checkpoint = ModelCheckpoint(os.path.join(MODEL_PATH, "model_quora.h5"), monitor='val_loss',
                                        verbose=1, save_best_only=True,
                                        save_weights_only=False, mode='auto', period=1)
