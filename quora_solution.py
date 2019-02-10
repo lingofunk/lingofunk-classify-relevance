@@ -29,10 +29,9 @@ os.environ["OMP_NUM_THREADS"] = "4"
 
 # Initialize global variables
 MAX_FEATURES = 100000
-MAX_SEQUENCE_LENGTH = 100
+MAX_SEQUENCE_LENGTH = 150
 EMBEDDING_DIM = 300
 DENSE_SIZE = 200
-NB_EPOCHS = 100
 DROPOUT = 0.1
 BATCH_SIZE = 128
 OPTIMIZER = 'adam'
@@ -79,7 +78,7 @@ def get_model(maxlen, max_features, dropout, dense_size, embed_size, embedding_m
 
 def train():
     config = tf.ConfigProto()
-    config.gpu_options.per_process_gpu_memory_fraction = 0.75
+    config.gpu_options.per_process_gpu_memory_fraction = 0.5
     set_session(tf.Session(config=config))
 
     logger = get_logger()
@@ -114,7 +113,7 @@ def train():
                                        save_weights_only=False, mode='auto', period=1)
 
     wanna_train = True
-    n_epochs = 25
+    n_epochs = 250
 
     while wanna_train:
         hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=n_epochs, verbose=1,
