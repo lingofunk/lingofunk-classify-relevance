@@ -42,6 +42,9 @@ class ReviewComparer:
     def answer_query(self, review1: str, review2: str):
         return self.ppl.predict([[review1], [review2]])[0][0]
 
+    def answer_queries(self, reviews1: list, reviews2: list):
+        return list(map(lambda x: x[0], self.ppl.predict([reviews1, reviews2])))
+
 
 if __name__ == "__main__":
     ppl = load_pipeline()

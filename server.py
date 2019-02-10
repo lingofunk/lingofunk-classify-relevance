@@ -20,11 +20,6 @@ class Server:
 
     def run_comparer(self):
         if request.method == "POST":
-            """
-            data = request.get_json()
-            logger.debug(data)
-            reviews = data.get("review1", "review2")
-            """
             data = request.get_json()
             reviews = [data["review1"], data["review2"]]
 

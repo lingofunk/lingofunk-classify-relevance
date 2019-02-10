@@ -2,6 +2,7 @@ from predict import *
 import time
 import pickle
 import os
+from itertools import product
 
 DATASET_CSV = os.path.join(DATA_DIR, "Brooklyn_dataset.csv")
 
@@ -41,18 +42,21 @@ class TownTextExtractor:
                 start = time.time()
                 n_ij = self.lens_restaurants[i] * self.lens_restaurants[j]
                 restaurants_j = self.restaurant_reviews[j]
+                """
                 for r_i in restaurants_i:
-                    for r_j in restaurants_j:
-                        self.similarity_matrix[i][j] += self.comparer.answer_query(r_i, r_j)
-                self.similarity_matrix[i][j] /= n_ij
+                    p_r_i = self.comparer.answer_queries([r_i for _ in range(len(restaurants_j))], restaurants_j)
+                    self.similarity_matrix[i][j] += np.sum(p_r_i)
+                """
+                queries_i = [r_i for r_i, r_j in product(restaurants_i, restaurants_j)]
+                queries_j = [r_j for r_i, r_j in product(restaurants_i, restaurants_j)]
+
+                ans_ij = self.comparer.answer_queries(queries_i, queries_j)
+                self.similarity_matrix[i][j] = np.mean(ans_ij)
                 self.similarity_matrix[j][i] = self.similarity_matrix[i][j]
                 finish = time.time()
                 self.n_total += n_ij
                 print(i, j, '\t\t', n_ij, finish - start)
                 total_time += finish - start
-        self.uniqueness = np.sum(self.similarity_matrix)
-        self.uniqueness_args = np.argsort(self.uniqueness)
-        self.uniqueness_sorted = self.uniqueness[self.uniqueness_args]
         pickle.dump(self.similarity_matrix, os.path.join(DATA_DIR, "town_similarity_matrix.pkl"))
         print("TIME: ", total_time)
 
