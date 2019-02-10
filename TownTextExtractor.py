@@ -9,7 +9,7 @@ DATASET_CSV = os.path.join(DATA_DIR, "Toronto_dataset.csv")
 
 class TownTextExtractor:
     def __init__(self, similarity_matrix=None):
-        self.restaurant_reviews = pd.read_csv(DATASET_CSV, sep="\\")
+        self.restaurant_reviews = pd.read_csv(DATASET_CSV)
 
         self.restaurant_reviews = self.restaurant_reviews.groupby(["business_id"]).agg({"business_id": tuple, "text": list})
 
