@@ -37,8 +37,8 @@ BATCH_SIZE = 128
 OPTIMIZER = 'adam'
 
 PREPROCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
-ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "architecture_quora2.json")
-WEIGHTS_FILE = os.path.join(MODEL_PATH, "weights_quora2.h5")
+ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "architecture_quora3.json")
+WEIGHTS_FILE = os.path.join(MODEL_PATH, "weights_quora3.h5")
 
 
 def get_model(maxlen, max_features, dropout, dense_size, embed_size, embedding_matrix):
@@ -112,7 +112,7 @@ def train():
     logger.info("Model created.")
 
     early_stopping = EarlyStopping(monitor='val_loss', patience=5)
-    model_checkpoint = ModelCheckpoint(os.path.join(MODEL_PATH, "model_quora2.h5"), monitor='val_loss',
+    model_checkpoint = ModelCheckpoint(os.path.join(MODEL_PATH, "model_quora3.h5"), monitor='val_loss',
                                        verbose=1, save_best_only=True,
                                        save_weights_only=False, mode='auto', period=1)
 
