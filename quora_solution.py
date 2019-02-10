@@ -114,7 +114,7 @@ def train():
                                        save_weights_only=False, mode='auto', period=1)
 
     wanna_train = True
-    n_epochs = 250
+    n_epochs = 25
 
     while wanna_train:
         hist = model.fit_generator(yelp_dataset_generator, steps_per_epoch=None, epochs=n_epochs, verbose=1,
@@ -137,3 +137,7 @@ def train():
             wanna_train = False
         else:
             n_epochs = ans
+
+
+if __name__ == "__main__":
+    train()
