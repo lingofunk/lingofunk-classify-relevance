@@ -49,11 +49,14 @@ def get_model(maxlen, max_features, dropout, dense_size, embed_size, embedding_m
     embedding_layer_2 = emb_layer(input_2)
 
     q1 = TimeDistributed(Dense(embed_size, activation='relu'))(embedding_layer_1)
-    q1 = GlobalMaxPooling1D(data_format='channels_last')(q1)
     q2 = TimeDistributed(Dense(embed_size, activation='relu'))(embedding_layer_2)
+    q0 = Subtract()([q1, q2])
+
+    q0 = GlobalMaxPooling1D(data_format='channels_last')(q0)
+    q1 = GlobalMaxPooling1D(data_format='channels_last')(q1)
     q2 = GlobalMaxPooling1D(data_format='channels_last')(q2)
 
-    merged = concatenate([q1, q2])
+    merged = concatenate([q0, q1, q2])
 
     merged = Dense(dense_size, activation='relu')(merged)
     merged = Dropout(dropout)(merged)
