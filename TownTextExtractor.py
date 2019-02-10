@@ -36,9 +36,9 @@ class TownTextExtractor:
 
     def compute_similarity_matrix(self):
         total_time = 0
-        for i in range(3):
+        for i in range(self.n_restaurants):
             restaurants_i = self.restaurant_reviews[i]
-            for j in range(i + 1, 3):
+            for j in range(i + 1, self.n_restaurants):
                 start = time.time()
                 n_ij = self.lens_restaurants[i] * self.lens_restaurants[j]
                 restaurants_j = self.restaurant_reviews[j]
@@ -55,6 +55,10 @@ class TownTextExtractor:
         out = open(os.path.join(DATA_DIR, "town_similarity_matrix.pkl"), "wb")
         pickle.dump(self.similarity_matrix, out)
         print("TIME: ", total_time)
+
+    def load_similarity_matrix(self):
+        inp = open(os.path.join(DATA_DIR, "town_similarity_matrix.pkl"), "rb")
+        self.similarity_matrix = pickle.load(inp)
 
     def get_heatmap_for_restaurant_id(self, i):
         return self.similarity_matrix[i] / sum(self.similarity_matrix[i])
