@@ -79,7 +79,7 @@ def get_model(maxlen, max_features, dropout, dense_size, embed_size, embedding_m
 
 def train():
     config = tf.ConfigProto()
-    config.gpu_options.per_process_gpu_memory_fraction = 0.5
+    config.gpu_options.per_process_gpu_memory_fraction = 0.75
     set_session(tf.Session(config=config))
 
     logger = get_logger()
@@ -108,7 +108,7 @@ def train():
 
     logger.info("Model created.")
 
-    early_stopping = EarlyStopping(monitor='val_loss', patience=5)
+    early_stopping = EarlyStopping(monitor='val_loss', patience=2)
     model_checkpoint = ModelCheckpoint(os.path.join(MODEL_PATH, "model_quora.h5"), monitor='val_loss',
                                        verbose=1, save_best_only=True,
                                        save_weights_only=False, mode='auto', period=1)
