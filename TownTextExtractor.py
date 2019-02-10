@@ -4,7 +4,7 @@ import pickle
 import os
 from itertools import product
 
-DATASET_CSV = os.path.join(DATA_DIR, "Brooklyn_dataset.csv")
+DATASET_CSV = os.path.join(DATA_DIR, "Toronto_dataset.csv")
 
 
 class TownTextExtractor:
