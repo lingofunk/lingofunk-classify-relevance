@@ -30,7 +30,8 @@ class TownTextExtractor:
         else:
             self.similarity_matrix = np.zeros(shape=(self.n_restaurants, self.n_restaurants))
         self.uniqueness = np.zeros(shape=(self.n_restaurants,))
-        self.uniqueness_args = np.zeros(shape=(self.n_restaurants,))
+        self.uniqueness_rest = np.zeros(shape=(self.n_restaurants,))
+        self.uniqueness_ids = list()
         self.uniqueness_sorted = np.zeros(shape=(self.n_restaurants,))
         self.n_total = 0
 
@@ -59,9 +60,10 @@ class TownTextExtractor:
     def load_similarity_matrix(self):
         inp = open(os.path.join(DATA_DIR, "town_similarity_matrix.pkl"), "rb")
         self.similarity_matrix = pickle.load(inp)
-        self.uniqueness = np.sum(self.similarity_matrix)
-        self.uniqueness_args = np.argsort(self.uniqueness)
-        self.uniqueness_sorted = np.sort(self.uniqueness)
+        self.uniqueness = np.sum(self.similarity_matrix, axis=-1)
+        self.uniqueness_ids = np.argsort(self.uniqueness)[::-1]
+        self.uniqueness_rest = list(map(lambda x: self.id2rest[x], self.uniqueness_ids))
+        self.uniqueness_sorted = np.sort(self.uniqueness)[::-1]
 
     def get_heatmap_for_restaurant_id(self, i):
         return self.similarity_matrix[i] / sum(self.similarity_matrix[i])
@@ -70,20 +72,7 @@ class TownTextExtractor:
         return self.get_heatmap_for_restaurant_id(self.rest2id[rest])
 
     def get_heatmap_for_restaurant(self, q):
-        if isinstance(g, int):
-            return zip(self.id2rest, self.get_heatmap_for_restaurant_id(q))
-        elif isinstance(g, str):
-            return zip(self.id2rest, self.get_heatmap_for_restaurant_name(q))
-        else:
-            print("Unexpected type of input.")
+        return list(sorted(zip(self.id2rest, self.get_heatmap_for_restaurant_name(q)), key=lambda x: -x[1]))
 
     def get_unique_restaurants(self):
-        return zip(self.uniqueness_args, self.uniqueness_sorted)
-
-
-tte = TownTextExtractor()
-# run this once
-# tte.compute_similarity_matrix()
-tte.load_similarity_matrix()
-
-
+        return list(zip(self.uniqueness_rest, self.uniqueness_sorted))
