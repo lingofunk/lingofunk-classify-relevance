@@ -1,0 +1,13 @@
+model:
+  dir: "assets/model"
+  current:
+    weights: "gru_weights_attn.h5"
+    preprocessor: "preprocessor_attn.pkl"
+    architecture: "gru_architecture_attn.json"
+
+data:
+  dir: "assets/data"
+  city: "Toronto_dataset.csv"
+  source: "restaurant_reviews.csv"
+  train: "reviews_train.csv"
+  test: "reviews_test.csv"

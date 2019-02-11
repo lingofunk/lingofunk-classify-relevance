@@ -4,9 +4,15 @@ from keras import initializers, regularizers, constraints
 
 
 class Attention(Layer):
-    def __init__(self, W_regularizer=None, b_regularizer=None,
-                 W_constraint=None, b_constraint=None,
-                 bias=True, **kwargs):
+    def __init__(
+        self,
+        W_regularizer=None,
+        b_regularizer=None,
+        W_constraint=None,
+        b_constraint=None,
+        bias=True,
+        **kwargs
+    ):
         """
         Keras Layer that implements an Attention mechanism for temporal data.
         Supports Masking.
@@ -25,7 +31,7 @@ class Attention(Layer):
         super(Attention, self).__init__(**kwargs)
         self.supports_masking = True
         # self.init = initializations.get('glorot_uniform')
-        self.init = initializers.get('glorot_uniform')
+        self.init = initializers.get("glorot_uniform")
 
         self.W_regularizer = regularizers.get(W_regularizer)
         self.b_regularizer = regularizers.get(b_regularizer)
@@ -40,20 +46,24 @@ class Attention(Layer):
     def build(self, input_shape):
         assert len(input_shape) == 3
 
-        self.W = self.add_weight((input_shape[-1],),
-                                 initializer=self.init,
-                                 name='{}_W'.format(self.name),
-                                 regularizer=self.W_regularizer,
-                                 constraint=self.W_constraint)
+        self.W = self.add_weight(
+            (input_shape[-1],),
+            initializer=self.init,
+            name="{}_W".format(self.name),
+            regularizer=self.W_regularizer,
+            constraint=self.W_constraint,
+        )
         self.features_dim = input_shape[-1]
         self.step_dim = input_shape[1]
 
         if self.bias:
-            self.b = self.add_weight((input_shape[1],),
-                                     initializer='zero',
-                                     name='{}_b'.format(self.name),
-                                     regularizer=self.b_regularizer,
-                                     constraint=self.b_constraint)
+            self.b = self.add_weight(
+                (input_shape[1],),
+                initializer="zero",
+                name="{}_b".format(self.name),
+                regularizer=self.b_regularizer,
+                constraint=self.b_constraint,
+            )
         else:
             self.b = None
 
@@ -69,7 +79,12 @@ class Attention(Layer):
         features_dim = self.features_dim
         step_dim = self.step_dim
 
-        eij = K.reshape(K.dot(K.reshape(x, (-1, features_dim)), K.reshape(self.W, (features_dim, 1))), (-1, step_dim))
+        eij = K.reshape(
+            K.dot(
+                K.reshape(x, (-1, features_dim)), K.reshape(self.W, (features_dim, 1))
+            ),
+            (-1, step_dim),
+        )
 
         if self.bias:
             eij += self.b

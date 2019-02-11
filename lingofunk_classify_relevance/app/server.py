@@ -4,7 +4,7 @@ import logging
 from flask import Flask, request, jsonify, Response
 import sys
 
-from predict import *
+from lingofunk_classify_relevance.model.current.predict import ReviewComparer
 
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -37,7 +37,7 @@ def load_args():
     parser.add_argument(
         "--port",
         type=int,
-        default=8001,
+        default=8000,
         help="The port to listen on (default is 8001).",
     )
     return parser.parse_args()

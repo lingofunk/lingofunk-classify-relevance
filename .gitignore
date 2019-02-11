@@ -136,3 +136,5 @@ dmypy.json
 .history
 
 # End of https://www.gitignore.io/api/python,visualstudiocode
+*.h5
+*.pkl

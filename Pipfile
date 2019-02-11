@@ -5,6 +5,8 @@ verify_ssl = true
 
 [dev-packages]
 ipython = "*"
+pylint = "*"
+black = "*"
 
 [packages]
 absl-py = "==0.7.0"
@@ -59,6 +61,8 @@ Jinja2 = "==2.10"
 Markdown = "==3.0.1"
 PyYAML = "==3.13"
 Werkzeug = "==0.14.1"
+dynaconf = {extras = ["yaml"],version = "*"}
+poyo = "*"
 
 [requires]
 python_version = "3.6"

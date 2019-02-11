@@ -3,8 +3,9 @@ import time
 import pickle
 import os
 from itertools import product
+from lingofunk_classify_relevance.config import fetch_data
 
-DATASET_CSV = os.path.join(DATA_DIR, "Toronto_dataset.csv")
+DATASET_CSV = fetch_data("city")
 
 
 class TownTextExtractor:
