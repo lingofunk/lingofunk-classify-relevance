@@ -20,7 +20,7 @@ MAXLEN = 100
 np.random.seed(42)
 
 
-class Preprocess(object):
+class Preprocess:
     def __init__(self, max_features, maxlen):
         self.max_features = max_features
         self.maxlen = maxlen

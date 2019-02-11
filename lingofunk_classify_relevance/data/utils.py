@@ -3,15 +3,17 @@ import os
 import pickle
 from pathlib import Path
 
-from lingofunk_classify_relevance.config import fetch_constant
-from lingofunk_classify_relevance.model.layers.attention import Attention
-from lingofunk_classify_relevance.data.yelp_dataset_generator import YELPSequence
 from keras.models import model_from_json
+
+from lingofunk_classify_relevance.config import fetch_constant
+from lingofunk_classify_relevance.data.yelp_dataset_generator import YELPSequence
+from lingofunk_classify_relevance.model.layers.attention import Attention
 
 
 def get_root():
     """Return project root folder"""
     return Path(__file__).parent.parent
+
 
 def get_embeddings(word_index, max_features, embed_size):
     assert embed_size in [25, 50, 100, 200, 300]  # default sizes of embeddings in BPEmb
@@ -28,7 +30,6 @@ def get_embeddings(word_index, max_features, embed_size):
     print(f"{in_voc_words} words in vocabulary found out of {max_features} total.")
 
     return embedding_matrix
-
 
 
 def get_logger(level=logging.INFO):
@@ -88,13 +89,3 @@ def load_pipeline_stages(preprocessor_file, architecture_file, weights_file):
     loaded_model.load_weights(weights_file)
     print("Loaded Model from disk")
     return preprocessor, loaded_model
-
-
-DIR_ROOT = get_root()
-DIR_ASSETS = os.path.join(DIR_ROOT, "assets")
-DATA_DIR = os.path.join(DIR_ROOT, "yelp-data")
-MODEL_PATH = os.path.join(DIR_ASSETS, "model")
-LOG_PATH = os.path.join(DIR_ASSETS, "tb_logs")
-PATH_TO_YELP_CSV = os.path.join(DATA_DIR, "restaurant_reviews.csv")
-PATH_TO_YELP_CSV_TRAIN = os.path.join(DATA_DIR, "reviews_train.csv")
-PATH_TO_YELP_CSV_TEST = os.path.join(DATA_DIR, "reviews_test.csv")
