@@ -1,18 +1,14 @@
 #! /usr/bin/env python
-# author: Xinbin Huang - Vancouver School of AI
-# date: Dec. 3, 2018
-
 import os
 
-from train_classifier_attn import *
+import tensorflow as tf
 
-from utils import get_root, load_pipeline_stages
+from lingofunk_classify_relevance.config import fetch_model
+from lingofunk_classify_relevance.data.utils import load_pipeline_stages
 
-ROOT = get_root()
-MODEL_PATH = os.path.join(ROOT, "assets", "model")
-PREPROCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
-ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn.json")
-WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights_attn.h5")
+PREPROCESSOR_FILE = fetch_model("current", "preprocessor")
+ARCHITECTURE_FILE = fetch_model("current", "architecture")
+WEIGHTS_FILE = fetch_model("current", "weights")
 
 
 class PredictionPipeline(object):
@@ -49,8 +45,18 @@ class ReviewComparer:
 if __name__ == "__main__":
     ppl = load_pipeline()
 
-    sample_text = [["nice food, mc Donald's is the best", "Beef was very tasty", "Awful car service!"],
-                   ["mc Donald's is the best restaurant I've ever seen!", "It's a great restaurant for vegans!", "Go go Arsenal!"]]
+    sample_text = [
+        [
+            "nice food, mc Donald's is the best",
+            "Beef was very tasty",
+            "Awful car service!",
+        ],
+        [
+            "mc Donald's is the best restaurant I've ever seen!",
+            "It's a great restaurant for vegans!",
+            "Go go Arsenal!",
+        ],
+    ]
 
     print(f"Relevance: {ppl.predict(sample_text)}")
     while True:

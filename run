@@ -1,0 +1,1 @@
+PYTOHNPATH=. python -m lingofunk_classify_relevance.app.server --port 8000
