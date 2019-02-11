@@ -45,6 +45,7 @@ def load_preprocessor(preprocessor_file, logger=get_logger()):
         with open(preprocessor_file, "rb") as f:
             preprocessor = pickle.load(f)
             logger.info("Opened preprocessing file.")
+            return preprocessor
     except FileNotFoundError:
         yelp_dataset_generator = YELPSequence(
             batch_size=fetch_constant("BATCH_SIZE"), test=False
@@ -52,9 +53,10 @@ def load_preprocessor(preprocessor_file, logger=get_logger()):
         with open(preprocessor_file, "wb") as file:
             pickle.dump(yelp_dataset_generator.preprocessor, file)
 
-    logger.info(f"Saving the text transformer: {preprocessor_file}")
+        logger.info(f"Saving the text transformer: {preprocessor_file}")
 
-    return yelp_dataset_generator.preprocessor
+        return yelp_dataset_generator.preprocessor
+    return None
 
 
 def load_pipeline_stages(preprocessor_file, architecture_file, weights_file):
