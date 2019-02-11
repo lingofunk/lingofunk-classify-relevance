@@ -36,23 +36,6 @@ class Preprocess(object):
         return features
 
 
-def get_embeddings(word_index, max_features, embed_size):
-    assert embed_size in [25, 50, 100, 200, 300]  # default sizes of embeddings in BPEmb
-    bpemb_en = BPEmb(lang="en", dim=embed_size)
-    embedding_matrix = np.zeros((max_features, embed_size))
-    in_voc_words = 0
-
-    for word, i in word_index.items():
-        if i >= max_features:
-            break
-        in_voc_words += 1
-        embedding_matrix[i] = np.sum(bpemb_en.embed(word), axis=0)
-
-    print(f"{in_voc_words} words in vocabulary found out of {max_features} total.")
-
-    return embedding_matrix
-
-
 class YELPSequence(Sequence):
     def __init__(self, batch_size=128, test=False, preprocessor=None):
         super().__init__()

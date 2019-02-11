@@ -18,10 +18,8 @@ from keras.layers import (
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 
-from lingofunk_classify_relevance.data.yelp_dataset_generator import (
-    YELPSequence,
-    get_embeddings,
-)
+from lingofunk_classify_relevance.data.utils import get_embeddings
+from lingofunk_classify_relevance.data.yelp_dataset_generator import YELPSequence
 from lingofunk_classify_relevance.model.layers.attention import Attention
 
 np.random.seed(42)

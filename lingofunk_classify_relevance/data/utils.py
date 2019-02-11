@@ -13,6 +13,23 @@ def get_root():
     """Return project root folder"""
     return Path(__file__).parent.parent
 
+def get_embeddings(word_index, max_features, embed_size):
+    assert embed_size in [25, 50, 100, 200, 300]  # default sizes of embeddings in BPEmb
+    bpemb_en = BPEmb(lang="en", dim=embed_size)
+    embedding_matrix = np.zeros((max_features, embed_size))
+    in_voc_words = 0
+
+    for word, i in word_index.items():
+        if i >= max_features:
+            break
+        in_voc_words += 1
+        embedding_matrix[i] = np.sum(bpemb_en.embed(word), axis=0)
+
+    print(f"{in_voc_words} words in vocabulary found out of {max_features} total.")
+
+    return embedding_matrix
+
+
 
 def get_logger(level=logging.INFO):
     """A simple logger for tracking training process"""
@@ -60,7 +77,6 @@ def load_preprocessor(preprocessor_file, logger=get_logger()):
 
 
 def load_pipeline_stages(preprocessor_file, architecture_file, weights_file):
-    # from train_classifier import Preprocess  # for unpickling to work properly
     preprocessor = load_preprocessor(preprocessor_file)
 
     json_file = open(architecture_file, "r")

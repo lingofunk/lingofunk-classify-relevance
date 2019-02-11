@@ -5,6 +5,7 @@ import tensorflow as tf
 
 from lingofunk_classify_relevance.config import fetch_model
 from lingofunk_classify_relevance.data.utils import load_pipeline_stages
+from lingofunk_classify_relevance.data.utils import Preprocess
 
 PREPROCESSOR_FILE = fetch_model("current", "preprocessor")
 ARCHITECTURE_FILE = fetch_model("current", "architecture")
