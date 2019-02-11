@@ -1,14 +1,15 @@
+import os
+
 import numpy as np
 import pandas as pd
-
 from bpemb import BPEmb
-from keras.preprocessing import text, sequence
-from scipy.spatial.distance import cosine
-
+from keras.preprocessing import sequence, text
 from keras.utils import Sequence
-
+from scipy.spatial.distance import cosine
 from sklearn.utils import shuffle as skshuffle
+
 from lingofunk_classify_relevance.config import fetch_data
+from lingofunk_classify_relevance.data.traintest_generator import split_data
 
 PATH_TO_YELP_CSV_TRAIN = fetch_data("train")
 PATH_TO_YELP_CSV_TEST = fetch_data("test")
@@ -55,6 +56,13 @@ def get_embeddings(word_index, max_features, embed_size):
 class YELPSequence(Sequence):
     def __init__(self, batch_size=128, test=False, preproc=None):
         super().__init__()
+
+        trainDoesExist = os.path.isfile(PATH_TO_YELP_CSV_TRAIN)
+        testDoesExist = os.path.isfile(PATH_TO_YELP_CSV_TEST)
+
+        if not (trainDoesExist and testDoesExist):
+            split_data()
+
         if test:
             self.restaurant_reviews = pd.read_csv(PATH_TO_YELP_CSV_TEST)
         else:

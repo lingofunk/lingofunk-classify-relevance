@@ -1,9 +1,6 @@
-from utils import *
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from lingofunk_classify_relevance.config import fetch_data
-
-np.random.seed(42)
 
 
 def split_data(test_size=0.25):

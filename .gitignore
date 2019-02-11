@@ -138,3 +138,5 @@ dmypy.json
 # End of https://www.gitignore.io/api/python,visualstudiocode
 *.h5
 *.pkl
+lingofunk_classify_relevance/assets/data/*
+lingofunk_classify_relevance/assets/model/attnet/gru_architecture_attn.json

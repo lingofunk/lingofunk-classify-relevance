@@ -1,44 +1,42 @@
 from __future__ import print_function
-import numpy as np
-import csv, datetime, time, json
+
+import csv
+import datetime
+import json
+import os
+import time
+import warnings
+from os.path import exists, expanduser
 from zipfile import ZipFile
-from os.path import expanduser, exists
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
-from keras.models import Model
+
+import numpy as np
+import tensorflow as tf
+from keras import backend as K
+from keras.backend.tensorflow_backend import set_session
+from keras.callbacks import Callback, EarlyStopping, ModelCheckpoint
 from keras.layers import (
-    Input,
-    TimeDistributed,
-    Dense,
-    Lambda,
-    concatenate,
-    Dropout,
+    LSTM,
+    Add,
     BatchNormalization,
+    Bidirectional,
+    Dense,
+    Dropout,
+    Embedding,
+    GlobalMaxPooling1D,
+    Input,
+    Lambda,
     MaxPool2D,
+    Subtract,
+    TimeDistributed,
+    concatenate,
 )
 from keras.layers.embeddings import Embedding
-from keras.callbacks import Callback, ModelCheckpoint
-from keras.utils.data_utils import get_file
-from keras import backend as K
-from sklearn.model_selection import train_test_split
-import warnings
-import tensorflow as tf
-from keras.backend.tensorflow_backend import set_session
-from keras.models import Model
-from keras.layers import (
-    Dense,
-    Input,
-    Bidirectional,
-    LSTM,
-    Embedding,
-    Dropout,
-    Add,
-    GlobalMaxPooling1D,
-    Subtract,
-)
 from keras.layers.normalization import BatchNormalization
-from keras.callbacks import EarlyStopping, ModelCheckpoint
-
+from keras.models import Model
+from keras.preprocessing.sequence import pad_sequences
+from keras.preprocessing.text import Tokenizer
+from keras.utils.data_utils import get_file
+from sklearn.model_selection import train_test_split
 
 from lingofunk_classify_relevance.data.yelp_dataset_generator import (
     YELPSequence,
