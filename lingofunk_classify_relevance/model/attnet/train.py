@@ -1,22 +1,27 @@
+import os
 import warnings
 
+import numpy as np
 import tensorflow as tf
-from lingofunk_classify_relevance.config import fetch_model
-
 from keras.backend.tensorflow_backend import set_session
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import LSTM, Add, Bidirectional, Dense, Dropout, Embedding, Input
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
-from yelp_dataset_generator import *
+
+from lingofunk_classify_relevance.config import fetch_model
+from lingofunk_classify_relevance.data.yelp_dataset_generator import (
+    YELPSequence,
+    get_embeddings,
+)
 
 np.random.seed(42)
 warnings.filterwarnings("ignore")
 os.environ["OMP_NUM_THREADS"] = "4"
 
-PREPROCESSOR_FILE = fetch_model("current", "preprocessor")
-ARCHITECTURE_FILE = fetch_model("current", "architecture")
-WEIGHTS_FILE = fetch_model("current", "weights")
+PREPROCESSOR_FILE = fetch_model("attnet", "preprocessor")
+ARCHITECTURE_FILE = fetch_model("attnet", "architecture")
+WEIGHTS_FILE = fetch_model("attnet", "weights")
 
 MAX_SEQUENCE_LENGTH = 150
 MAX_NB_WORDS = 100_000
@@ -48,6 +53,7 @@ def get_model(
     embedding_layer_1 = emb_layer(input_1)
     embedding_layer_2 = emb_layer(input_2)
     # embedded_sequences = concatenate([embedding_layer_1, embedding_layer_2], axis=-1)
+    # embedded_sequences = Add()([embedding_layer_1, embedding_layer_2])
     embedded_sequences = Add()([embedding_layer_1, embedding_layer_2])
     x = Bidirectional(
         LSTM(
@@ -78,21 +84,6 @@ def train():
 
     logger = get_logger()
     logger.info(f"Transforming data")
-
-    try:
-        with open(PREPROCESSOR_FILE, "rb") as f:
-            preprocessor = pickle.load(f)
-            yelp_dataset_generator = YELPSequence(
-                batch_size=BATCH_SIZE, test=False, preproc=preprocessor
-            )
-            logger.info("Opened preprocessing file.")
-    except FileNotFoundError:
-        yelp_dataset_generator = YELPSequence(batch_size=BATCH_SIZE, test=False)
-
-    logger.info(f"Saving the text transformer: {PREPROCESSOR_FILE}")
-
-    with open(PREPROCESSOR_FILE, "wb") as file:
-        pickle.dump(yelp_dataset_generator.preprocessor, file)
 
     word_index = yelp_dataset_generator.preprocessor.tokenizer.word_index
     embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBEDDING_DIM)

@@ -1,6 +1,12 @@
 model:
   dir: "assets/model"
   current:
+    name: attnet
+  attsubnet:
+    weights: "gru_weights_attn_sub.h5"
+    preprocessor: "preprocessor_attn.pkl"
+    architecture: "gru_architecture_attn_sub.json"
+  attnet:
     weights: "gru_weights_attn.h5"
     preprocessor: "preprocessor_attn.pkl"
     architecture: "gru_architecture_attn.json"
@@ -11,3 +17,6 @@ data:
   source: "restaurant_reviews.csv"
   train: "reviews_train.csv"
   test: "reviews_test.csv"
+
+constants:
+  BATCH_SIZE: 128

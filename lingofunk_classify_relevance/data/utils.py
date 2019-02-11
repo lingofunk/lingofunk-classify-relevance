@@ -3,7 +3,9 @@ import os
 import pickle
 from pathlib import Path
 
-from lingofunk_classify_relevance.model.current.attention import Attention
+from lingofunk_classify_relevance.config import fetch_constant
+from lingofunk_classify_relevance.model.layers.attention import Attention
+from lingofunk_classify_relevance.data.yelp_dataset_generator import YELPSequence
 from keras.models import model_from_json
 
 
@@ -38,9 +40,26 @@ def load_model(architecture_file, weights_file):
     return model
 
 
+def load_preprocessor(preprocessor_file, logger=get_logger()):
+    try:
+        with open(preprocessor_file, "rb") as f:
+            preprocessor = pickle.load(f)
+            logger.info("Opened preprocessing file.")
+    except FileNotFoundError:
+        yelp_dataset_generator = YELPSequence(
+            batch_size=fetch_constant("BATCH_SIZE"), test=False
+        )
+
+    logger.info(f"Saving the text transformer: {preprocessor_file}")
+
+    with open(preprocessor_file, "wb") as file:
+        pickle.dump(yelp_dataset_generator.preprocessor, file)
+    return preprocessor
+
+
 def load_pipeline_stages(preprocessor_file, architecture_file, weights_file):
     # from train_classifier import Preprocess  # for unpickling to work properly
-    preprocessor = pickle.load(open(preprocessor_file, "rb"))
+    preprocessor = load_preprocessor(preprocessor_file)
 
     json_file = open(architecture_file, "r")
     loaded_model_json = json_file.read()

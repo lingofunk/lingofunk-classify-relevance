@@ -40,4 +40,10 @@ def fetch_data(*argv):
 
 
 def fetch_model(name, *argv):
+    if name == "current":
+        name = config["model"]["current"]["name"]
     return fetch_from_home("model", name, get_from_config("model", name, *argv))
+
+
+def fetch_constant(name):
+    return config["constants"][name]
