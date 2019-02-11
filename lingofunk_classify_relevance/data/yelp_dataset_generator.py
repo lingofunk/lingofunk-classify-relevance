@@ -54,7 +54,7 @@ def get_embeddings(word_index, max_features, embed_size):
 
 
 class YELPSequence(Sequence):
-    def __init__(self, batch_size=128, test=False, preproc=None):
+    def __init__(self, batch_size=128, test=False, preprocessor=None):
         super().__init__()
 
         trainDoesExist = os.path.isfile(PATH_TO_YELP_CSV_TRAIN)
@@ -80,19 +80,19 @@ class YELPSequence(Sequence):
         self.lens_restaurants = np.array(list(map(len, self.restaurant_reviews)))
 
         self.batch_size = batch_size
-        self.preprocessor = preproc
         self.test = test
-        self.preprocess()
 
-    def preprocess(self):
-        # train mode
-        if (self.preprocessor is None) and not self.test:
+        self.preprocessor = self.__init_preprocessor(preprocessor)
+
+    def __init_preprocessor(self, preprocessor):
+        if not self.test and not preprocessor:
             self.preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
             for i in range(0, self.n_restaurants, 5000):
                 high = min(i + 5000, self.n_restaurants)
                 all_texts = sum(self.restaurant_reviews[i:high], [])
                 self.preprocessor.fit_texts(all_texts)
-            print("All texts are fitted!")
+            print("Fitted the preprocessor on all texts!")
+        return preprocessor
 
     @staticmethod
     def compute_similarity(vec1, vec2):

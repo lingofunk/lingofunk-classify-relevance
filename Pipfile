@@ -7,6 +7,7 @@ verify_ssl = true
 ipython = "*"
 pylint = "*"
 black = "*"
+rope = "*"
 
 [packages]
 absl-py = "==0.7.0"
@@ -63,6 +64,7 @@ PyYAML = "==3.13"
 Werkzeug = "==0.14.1"
 dynaconf = {extras = ["yaml"],version = "*"}
 poyo = "*"
+geojson = "*"
 
 [requires]
 python_version = "3.6"

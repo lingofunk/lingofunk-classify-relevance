@@ -14,9 +14,16 @@ model:
 data:
   dir: "assets/data"
   city: "Toronto_dataset.csv"
+  geojson: "toronto-top-100-restaurants.geojson"
   source: "restaurant_reviews.csv"
   train: "reviews_train.csv"
   test: "reviews_test.csv"
+  businesses: "business.json"
+  reviews: "review.json"
 
 constants:
   BATCH_SIZE: 128
+  TOP_COUNT: 100
+  REVIEWS_PER_BUSINESS: 20
+  BUSINESS_TYPE: Restaurant
+  CITY: Toronto
