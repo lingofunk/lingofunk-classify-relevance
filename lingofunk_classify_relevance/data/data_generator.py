@@ -8,14 +8,14 @@ from keras.utils import Sequence
 from scipy.spatial.distance import cosine
 from sklearn.utils import shuffle as skshuffle
 
-from lingofunk_classify_relevance.config import fetch_data
+from lingofunk_classify_relevance.config import fetch_data, fetch_constant
 from lingofunk_classify_relevance.data.traintest_generator import split_data
 
 PATH_TO_YELP_CSV_TRAIN = fetch_data("train")
 PATH_TO_YELP_CSV_TEST = fetch_data("test")
 
-MAX_FEATURES = 100_000
-MAXLEN = 100
+VOCAB_MAX_FEATURES = fetch_constant("VOCAB_MAX_FEATURES")
+WORD_MAX_LEN = fetch_constant("WORD_MAX_LEN")
 
 np.random.seed(42)
 
@@ -69,7 +69,9 @@ class YELPSequence(Sequence):
 
     def __init_preprocessor(self, preprocessor):
         if not self.test and not preprocessor:
-            self.preprocessor = Preprocess(max_features=MAX_FEATURES, maxlen=MAXLEN)
+            self.preprocessor = Preprocess(
+                max_features=VOCAB_MAX_FEATURES, maxlen=WORD_MAX_LEN
+            )
             for i in range(0, self.n_restaurants, 5000):
                 high = min(i + 5000, self.n_restaurants)
                 all_texts = sum(self.restaurant_reviews[i:high], [])
