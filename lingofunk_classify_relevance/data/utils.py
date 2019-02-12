@@ -1,7 +1,7 @@
 import logging
-import os
 import pickle
 from pathlib import Path
+from bpemb import BPEmb
 
 import numpy as np
 import pandas as pd
@@ -90,7 +90,6 @@ def load_preprocessor(preprocessor_file, logger=get_logger()):
         logger.info(f"Saving the text transformer: {preprocessor_file}")
 
         return preprocessor
-
 
 def load_pipeline_stages(preprocessor_file, architecture_file, weights_file):
     preprocessor = load_preprocessor(preprocessor_file)

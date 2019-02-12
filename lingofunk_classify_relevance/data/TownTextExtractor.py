@@ -1,11 +1,14 @@
-from predict import *
+from lingofunk_classify_relevance.predict import *
 import time
 import pickle
-import os
+import numpy as np
+import pandas as pd
 from itertools import product
 from lingofunk_classify_relevance.config import fetch_data
 
 DATASET_CSV = fetch_data("city")
+SIMILARITY_MATRIX = fetch_data("citymatrix")
+
 
 class TownTextExtractor:
     def __init__(self, similarity_matrix=None):
@@ -61,12 +64,12 @@ class TownTextExtractor:
                 self.n_total += n_ij
                 print(i, j, "\t\t", n_ij, finish - start)
                 total_time += finish - start
-        out = open(os.path.join(DATA_DIR, "town_similarity_matrix.pkl"), "wb")
+        out = open(SIMILARITY_MATRIX, "wb")
         pickle.dump(self.similarity_matrix, out)
         print("TIME: ", total_time)
 
     def load_similarity_matrix(self):
-        inp = open(os.path.join(DATA_DIR, "town_similarity_matrix.pkl"), "rb")
+        inp = open(SIMILARITY_MATRIX, "rb")
         self.similarity_matrix = pickle.load(inp)
         self.uniqueness = np.sum(self.similarity_matrix, axis=-1)
         self.uniqueness_ids = np.argsort(self.uniqueness)[::-1]

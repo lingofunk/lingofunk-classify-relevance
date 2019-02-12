@@ -4,7 +4,7 @@ import logging
 from flask import Flask, request, jsonify, Response
 import sys
 
-from lingofunk_classify_relevance.predict import ReviewComparer
+from lingofunk_classify_relevance.data.TownTextExtractor import TownTextExtractor
 
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -12,18 +12,35 @@ logger.setLevel(logging.DEBUG)
 
 
 class Server:
-    def __init__(self, app: Flask, review_comparer: ReviewComparer, port: int):
+    def __init__(self, app: Flask, tte: TownTextExtractor, port: int):
         self._app = app
-        self._review_comparer = review_comparer
+        self._tte = tte
         self._port = port
         app.route("/api/review_comparer", methods=["GET", "POST"])(self.run_comparer)
+        app.route("/api/get_similar", methods=["GET", "POST"])(self.run_similar)
+        app.route("/api/get_unique", methods=["GET", "POST"])(self.run_unique)
 
     def run_comparer(self):
         if request.method == "POST":
             data = request.get_json()
             reviews = [data["review1"], data["review2"]]
-            similarity = self._review_comparer.answer_query(reviews[0], reviews[1])
+            similarity = self._tte.comparer.answer_query(reviews[0], reviews[1])
             return jsonify(text=str(similarity))
+        else:
+            return Response(status=501)
+
+    def run_similar(self):
+        if request.method == "POST":
+            data = request.get_json()
+            restaurants = self._tte.get_heatmap_for_restaurant(data["id"])
+            return jsonify(restaurants=restaurants)
+        else:
+            return Response(status=501)
+
+    def run_unique(self):
+        if request.method == "GET":
+            restaurants = self._tte.get_unique_restaurants()
+            return jsonify(restaurants=restaurants)
         else:
             return Response(status=501)
 
@@ -43,10 +60,11 @@ def load_args():
 
 
 def main():
-    review_comparer = ReviewComparer()
+    tte = TownTextExtractor()
+    tte.load_similarity_matrix()
     args = load_args()
     app = Flask(__name__)
-    server = Server(app, review_comparer, args.port)
+    server = Server(app, tte, args.port)
     server.serve()
 
 
