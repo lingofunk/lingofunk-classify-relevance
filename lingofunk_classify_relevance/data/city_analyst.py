@@ -44,11 +44,16 @@ class CityAnalyst:
             with open(SIMILARITY_MATRIX, "rb") as f:
                 self.similarity_matrix = pickle.load(f)
         else:
-            self.similarity_matrix = self.compute_similarity_matrix()
+            self.similarity_matrix = self.__init_similarity_matrix__()
 
         self.__init_uniqueness_table()
 
-    def compute_similarity_matrix(self):
+    @classmethod
+    def compute_similarity_matrix(cls):
+        city_analyst = cls()
+        return city_analyst.__init_similarity_matrix__()
+
+    def __init_similarity_matrix__(self):
         total_time = 0
         similarity_matrix = np.zeros(shape=(self.n_restaurants, self.n_restaurants))
         for i in range(self.n_restaurants):
@@ -67,9 +72,9 @@ class CityAnalyst:
                 self.n_total += n_ij
                 print(i, j, "\t\t", n_ij, finish - start)
                 total_time += finish - start
-        out = open(SIMILARITY_MATRIX, "wb")
-        pickle.dump(similarity_matrix, out)
-        print("TIME: ", total_time)
+        with open(SIMILARITY_MATRIX, "wb") as f:
+            pickle.dump(similarity_matrix, out)
+        print(f"Computed the similarity matrix in {total_time}s")
         return similarity_matrix
 
     def __init_uniqueness_table(self):
@@ -94,3 +99,7 @@ class CityAnalyst:
 
     def get_unique_restaurants(self):
         return list(zip(self.uniqueness_rest, self.uniqueness_sorted))
+
+
+if __name__ == "__main__":
+    CityAnalyst.compute_similarity_matrix()

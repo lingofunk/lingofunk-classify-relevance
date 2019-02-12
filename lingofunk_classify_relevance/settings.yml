@@ -20,8 +20,8 @@ data:
   city_matrix: "town_similarity_matrix.pkl"
   geojson: "toronto-top-100-restaurants.geojson"
   source: "restaurant_reviews.csv"
-  train: "reviews_train_small.csv"
-  test: "reviews_test_small.csv"
+  train: "reviews_train.csv"
+  test: "reviews_test.csv"
   businesses: "business.json"
   reviews: "review.json"
 
