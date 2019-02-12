@@ -11,7 +11,7 @@ from keras.models import Model
 
 from lingofunk_classify_relevance.config import fetch_model
 from lingofunk_classify_relevance.data.utils import get_embeddings, get_logger
-from lingofunk_classify_relevance.data.yelp_dataset_generator import YELPSequence
+from lingofunk_classify_relevance.data.data_generator import YELPSequence
 from lingofunk_classify_relevance.model.layers.attention import Attention
 
 np.random.seed(42)
@@ -84,13 +84,13 @@ def train():
     logger = get_logger()
     logger.info(f"Transforming data")
 
-    word_index = yelp_dataset_generator.preprocessor.tokenizer.word_index
+    word_index = data_generator.preprocessor.tokenizer.word_index
     embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBEDDING_DIM)
 
-    yelp_dataset_generator_val = YELPSequence(
+    data_generator_val = YELPSequence(
         batch_size=BATCH_SIZE,
         test=True,
-        preprocessor=yelp_dataset_generator.preprocessor,
+        preprocessor=data_generator.preprocessor,
     )
 
     model = get_model(
@@ -121,12 +121,12 @@ def train():
 
     while wanna_train:
         hist = model.fit_generator(
-            yelp_dataset_generator,
+            data_generator,
             steps_per_epoch=None,
             epochs=n_epochs,
             verbose=1,
             callbacks=[early_stopping, model_checkpoint],
-            validation_data=yelp_dataset_generator_val,
+            validation_data=data_generator_val,
             validation_steps=100,
             class_weight=None,
             max_queue_size=10000,

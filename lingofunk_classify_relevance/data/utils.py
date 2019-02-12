@@ -3,10 +3,12 @@ import pickle
 from pathlib import Path
 from bpemb import BPEmb
 
+import numpy as np
+import pandas as pd
 from keras.models import model_from_json
 
-from lingofunk_classify_relevance.config import fetch_constant
-from lingofunk_classify_relevance.data.yelp_dataset_generator import YELPSequence
+from lingofunk_classify_relevance.config import fetch_constant, fetch_data
+from lingofunk_classify_relevance.data.data_generator import Preprocess
 from lingofunk_classify_relevance.model.layers.attention import Attention
 
 
@@ -59,22 +61,35 @@ def load_model(architecture_file, weights_file):
 
 
 def load_preprocessor(preprocessor_file, logger=get_logger()):
+    VOCAB_MAX_FEATURES = fetch_constant("VOCAB_MAX_FEATURES")
+    WORD_MAX_LEN = fetch_constant("WORD_MAX_LEN")
+    PATH_TO_YELP_CSV_TRAIN = fetch_data("train")
+
     try:
         with open(preprocessor_file, "rb") as f:
             preprocessor = pickle.load(f)
             logger.info("Opened preprocessing file.")
             return preprocessor
     except FileNotFoundError:
-        yelp_dataset_generator = YELPSequence(
-            batch_size=fetch_constant("BATCH_SIZE"), test=False
+        text = (
+            pd.read_csv(PATH_TO_YELP_CSV_TRAIN)
+            .groupby(["business_id"])
+            .agg({"text": list})["text"]
+            .values
         )
+        preprocessor = Preprocess(max_features=VOCAB_MAX_FEATURES, maxlen=WORD_MAX_LEN)
+        for i in range(0, len(text), 5000):
+            high = min(i + 5000, len(text))
+            all_texts = sum(text[i:high], [])
+            preprocessor.fit_texts(all_texts)
+        print("Fitted the preprocessor on all texts!")
+
         with open(preprocessor_file, "wb") as file:
-            pickle.dump(yelp_dataset_generator.preprocessor, file)
+            pickle.dump(preprocessor, file)
 
         logger.info(f"Saving the text transformer: {preprocessor_file}")
 
-        return yelp_dataset_generator.preprocessor
-
+        return preprocessor
 
 def load_pipeline_stages(preprocessor_file, architecture_file, weights_file):
     preprocessor = load_preprocessor(preprocessor_file)

@@ -19,7 +19,7 @@ from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 
 from lingofunk_classify_relevance.data.utils import get_embeddings
-from lingofunk_classify_relevance.data.yelp_dataset_generator import YELPSequence
+from lingofunk_classify_relevance.data.data_generator import YELPSequence
 from lingofunk_classify_relevance.model.layers.attention import Attention
 
 np.random.seed(42)
@@ -95,23 +95,23 @@ def train():
     try:
         with open(PREPROCESSOR_FILE, "rb") as f:
             preprocessor = pickle.load(f)
-            yelp_dataset_generator = YELPSequence(
+            data_generator = YELPSequence(
                 batch_size=BATCH_SIZE, test=False, preproc=preprocessor
             )
             logger.info("Opened preprocessing file.")
     except FileNotFoundError:
-        yelp_dataset_generator = YELPSequence(batch_size=BATCH_SIZE, test=False)
+        data_generator = YELPSequence(batch_size=BATCH_SIZE, test=False)
 
     logger.info(f"Saving the text transformer: {PREPROCESSOR_FILE}")
 
     with open(PREPROCESSOR_FILE, "wb") as file:
-        pickle.dump(yelp_dataset_generator.preprocessor, file)
+        pickle.dump(data_generator.preprocessor, file)
 
-    word_index = yelp_dataset_generator.preprocessor.tokenizer.word_index
+    word_index = data_generator.preprocessor.tokenizer.word_index
     embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBEDDING_DIM)
 
-    yelp_dataset_generator_val = YELPSequence(
-        batch_size=BATCH_SIZE, test=True, preproc=yelp_dataset_generator.preprocessor
+    data_generator_val = YELPSequence(
+        batch_size=BATCH_SIZE, test=True, preproc=data_generator.preprocessor
     )
 
     model = get_model(
@@ -142,12 +142,12 @@ def train():
 
     while wanna_train:
         hist = model.fit_generator(
-            yelp_dataset_generator,
+            data_generator,
             steps_per_epoch=None,
             epochs=n_epochs,
             verbose=1,
             callbacks=[early_stopping, model_checkpoint],
-            validation_data=yelp_dataset_generator_val,
+            validation_data=data_generator_val,
             validation_steps=100,
             class_weight=None,
             max_queue_size=10000,

@@ -16,13 +16,15 @@ data:
   city: "Toronto_dataset.csv"
   citymatrix: "town_similarity_matrix.pkl"
   geojson: "toronto-top-100-restaurants.geojson"
-  source: "restaurant_reviews.csv"
-  train: "reviews_train.csv"
-  test: "reviews_test.csv"
+  source: "restaurant_reviews_small.csv"
+  train: "reviews_train_small.csv"
+  test: "reviews_test_small.csv"
   businesses: "business.json"
   reviews: "review.json"
 
 constants:
+  VOCAB_MAX_FEATURES: 100000
+  WORD_MAX_LEN: 100
   BATCH_SIZE: 128
   TOP_COUNT: 100
   REVIEWS_PER_BUSINESS: 20
