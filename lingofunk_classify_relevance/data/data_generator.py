@@ -3,7 +3,6 @@ import os
 import numpy as np
 import pandas as pd
 from bpemb import BPEmb
-from keras.preprocessing import sequence, text
 from keras.utils import Sequence
 from scipy.spatial.distance import cosine
 from sklearn.utils import shuffle as skshuffle
