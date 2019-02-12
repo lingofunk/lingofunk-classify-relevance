@@ -51,7 +51,7 @@ class CityAnalyst:
     @classmethod
     def compute_similarity_matrix(cls):
         city_analyst = cls()
-        return city_analyst.__init_similarity_matrix__()
+        return city_analyst.similarity_matrix
 
     def __init_similarity_matrix__(self):
         total_time = 0
