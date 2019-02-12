@@ -62,11 +62,10 @@ def load_args():
 
 
 def main():
-    tte = CityAnalyst()
-    tte.load_similarity_matrix()
+    city_analyst = CityAnalyst()
     args = load_args()
     app = Flask(__name__)
-    server = Server(app, tte, args.port)
+    server = Server(app, city_analyst, args.port)
     server.serve()
 
 

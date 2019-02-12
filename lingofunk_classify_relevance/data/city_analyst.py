@@ -1,3 +1,4 @@
+import os
 import pickle
 import time
 from itertools import product
@@ -36,15 +37,16 @@ class CityAnalyst:
 
         self.comparer = ReviewComparer()
 
+        self.n_total = 0
         if similarity_matrix:
             self.similarity_matrix = similarity_matrix
+        elif os.path.isfile(SIMILARITY_MATRIX):
+            with open(SIMILARITY_MATRIX, "rb") as f:
+                self.similarity_matrix = pickle.load(f)
         else:
             self.similarity_matrix = self.compute_similarity_matrix()
-        self.uniqueness = np.zeros(shape=(self.n_restaurants,))
-        self.uniqueness_rest = np.zeros(shape=(self.n_restaurants,))
-        self.uniqueness_ids = list()
-        self.uniqueness_sorted = np.zeros(shape=(self.n_restaurants,))
-        self.n_total = 0
+
+        self.__init_uniqueness_table()
 
     def compute_similarity_matrix(self):
         total_time = 0
@@ -70,9 +72,7 @@ class CityAnalyst:
         print("TIME: ", total_time)
         return similarity_matrix
 
-    def load_similarity_matrix(self):
-        inp = open(SIMILARITY_MATRIX, "rb")
-        self.similarity_matrix = pickle.load(inp)
+    def __init_uniqueness_table(self):
         self.uniqueness = np.sum(self.similarity_matrix, axis=-1)
         self.uniqueness_ids = np.argsort(self.uniqueness)[::-1]
         self.uniqueness_rest = list(map(lambda x: self.id2rest[x], self.uniqueness_ids))
