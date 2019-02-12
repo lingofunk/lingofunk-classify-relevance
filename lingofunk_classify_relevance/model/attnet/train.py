@@ -10,7 +10,7 @@ from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 
 from lingofunk_classify_relevance.config import fetch_model
-from lingofunk_classify_relevance.data.utils import get_embeddings, get_logger
+from lingofunk_classify_relevance.data.utils import get_embeddings, get_logger, load_preprocessor
 from lingofunk_classify_relevance.data.data_generator import YELPSequence
 from lingofunk_classify_relevance.model.layers.attention import Attention
 
@@ -23,7 +23,6 @@ ARCHITECTURE_FILE = fetch_model("attnet", "architecture")
 WEIGHTS_FILE = fetch_model("attnet", "weights")
 
 MAX_SEQUENCE_LENGTH = 150
-MAX_NB_WORDS = 100_000
 EMBEDDING_DIM = 300
 DENSE_SIZE = 256
 LSTM_SIZE = 300
@@ -94,7 +93,7 @@ def train():
     )
 
     model = get_model(
-        MAXLEN,
+        MAX_SEQUENCE_LENGTH,
         MAX_FEATURES,
         LSTM_SIZE,
         RATE_DROP_LSTM,

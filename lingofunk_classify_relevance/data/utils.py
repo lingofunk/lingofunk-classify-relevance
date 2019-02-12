@@ -92,6 +92,7 @@ def load_preprocessor(preprocessor_file, logger=get_logger()):
 
         return preprocessor
 
+
 def load_pipeline_stages(preprocessor_file, architecture_file, weights_file):
     preprocessor = load_preprocessor(preprocessor_file)
 

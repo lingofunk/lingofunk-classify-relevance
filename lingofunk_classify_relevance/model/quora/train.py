@@ -40,6 +40,7 @@ from keras.utils.data_utils import get_file
 from sklearn.model_selection import train_test_split
 
 from lingofunk_classify_relevance.data.utils import get_embeddings
+from lingofunk_classify_relevance.config import fetch_model
 from lingofunk_classify_relevance.data.data_generator import YELPSequence
 
 np.random.seed(42)
