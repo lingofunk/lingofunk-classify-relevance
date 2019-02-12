@@ -9,10 +9,10 @@ from lingofunk_classify_relevance.config import fetch_data
 from lingofunk_classify_relevance.predict import ReviewComparer
 
 DATASET_CSV = fetch_data("city")
-SIMILARITY_MATRIX = fetch_data("citymatrix")
+SIMILARITY_MATRIX = fetch_data("city_matrix")
 
 
-class TownTextExtractor:
+class CityAnalyst:
     def __init__(self, similarity_matrix=None):
         self.restaurant_reviews = pd.read_csv(DATASET_CSV)
 
@@ -36,12 +36,10 @@ class TownTextExtractor:
 
         self.comparer = ReviewComparer()
 
-        if similarity_matrix is not None:
+        if similarity_matrix:
             self.similarity_matrix = similarity_matrix
         else:
-            self.similarity_matrix = np.zeros(
-                shape=(self.n_restaurants, self.n_restaurants)
-            )
+            self.similarity_matrix = self.compute_similarity_matrix()
         self.uniqueness = np.zeros(shape=(self.n_restaurants,))
         self.uniqueness_rest = np.zeros(shape=(self.n_restaurants,))
         self.uniqueness_ids = list()
@@ -50,6 +48,7 @@ class TownTextExtractor:
 
     def compute_similarity_matrix(self):
         total_time = 0
+        similarity_matrix = np.zeros(shape=(self.n_restaurants, self.n_restaurants))
         for i in range(self.n_restaurants):
             restaurants_i = self.restaurant_reviews[i]
             for j in range(i + 1, self.n_restaurants):
@@ -60,8 +59,8 @@ class TownTextExtractor:
                 queries_j = [r_j for r_i, r_j in product(restaurants_i, restaurants_j)]
 
                 ans_ij = self.comparer.answer_queries(queries_i, queries_j)
-                self.similarity_matrix[i][j] = np.mean(ans_ij)
-                self.similarity_matrix[j][i] = self.similarity_matrix[i][j]
+                similarity_matrix[i][j] = np.mean(ans_ij)
+                similarity_matrix[j][i] = similarity_matrix[i][j]
                 finish = time.time()
                 self.n_total += n_ij
                 print(i, j, "\t\t", n_ij, finish - start)
@@ -69,6 +68,7 @@ class TownTextExtractor:
         out = open(SIMILARITY_MATRIX, "wb")
         pickle.dump(self.similarity_matrix, out)
         print("TIME: ", total_time)
+        return similarity_matrix
 
     def load_similarity_matrix(self):
         inp = open(SIMILARITY_MATRIX, "rb")

@@ -1,4 +1,4 @@
-from lingofunk_classify_relevance.data.TownTextExtractor import TownTextExtractor
+from lingofunk_classify_relevance.data.city_analyst import CityAnalyst
 
-tte = TownTextExtractor()
+tte = CityAnalyst()
 tte.compute_similarity_matrix()

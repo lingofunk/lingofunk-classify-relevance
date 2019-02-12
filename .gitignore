@@ -142,4 +142,4 @@ dmypy.json
 *.h5
 *.pkl
 lingofunk_classify_relevance/assets/data/*
-lingofunk_classify_relevance/assets/model/attnet/gru_architecture_attn.json
+lingofunk_classify_relevance/assets/model/*/*.json

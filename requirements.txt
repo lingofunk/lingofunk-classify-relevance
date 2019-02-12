@@ -26,7 +26,9 @@ itsdangerous==1.1.0
 jinja2==2.10
 jmespath==0.9.3
 joblib==0.13.1
-keras==2.1.5
+keras-applications==1.0.7
+keras-preprocessing==1.0.9
+keras==2.2.4
 markdown==3.0.1
 markupsafe==1.1.0
 msgpack-numpy==0.4.3.2

@@ -28,7 +28,7 @@ html5lib = "==0.9999999"
 idna = "==2.8"
 itsdangerous = "==1.1.0"
 joblib = "==0.13.1"
-keras = "==2.1.5"
+keras = "*"
 markupsafe = "==1.1.0"
 msgpack-numpy = "==0.4.3.2"
 msgpack = "==0.5.6"
@@ -67,3 +67,6 @@ poyo = "*"
 
 [requires]
 python_version = "3.6"
+
+[pipenv]
+allow_prereleases = true
