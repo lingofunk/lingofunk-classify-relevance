@@ -55,9 +55,9 @@ DROPOUT = 0.1
 BATCH_SIZE = 128
 OPTIMIZER = "adam"
 
-PREPROCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
-ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "architecture_quora3.json")
-WEIGHTS_FILE = os.path.join(MODEL_PATH, "weights_quora3.h5")
+PREPROCESSOR_FILE = fetch_model("quora", "preprocessor")
+ARCHITECTURE_FILE = fetch_model("quora", "architecture")
+WEIGHTS_FILE = fetch_model("quora", "weights")
 
 
 def get_model(maxlen, max_features, dropout, dense_size, embed_size, embedding_matrix):
@@ -109,28 +109,13 @@ def train():
     logger = get_logger()
     logger.info(f"Transforming data")
 
-    try:
-        with open(PREPROCESSOR_FILE, "rb") as f:
-            preprocessor = pickle.load(f)
-            data_generator = YELPSequence(
-                batch_size=BATCH_SIZE, test=False, preproc=preprocessor
-            )
-            logger.info("Opened preprocessing file.")
-    except FileNotFoundError:
-        data_generator = YELPSequence(batch_size=BATCH_SIZE, test=False)
-
-    logger.info(f"Saving the text transformer: {PREPROCESSOR_FILE}")
-
-    with open(PREPROCESSOR_FILE, "wb") as file:
-        pickle.dump(data_generator.preprocessor, file)
+    data_generator = YELPSequence(batch_size=BATCH_SIZE, test=False)
 
     word_index = data_generator.preprocessor.tokenizer.word_index
     embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBEDDING_DIM)
 
     data_generator_val = YELPSequence(
-        batch_size=BATCH_SIZE,
-        test=True,
-        preprocessor=data_generator.preprocessor,
+        batch_size=BATCH_SIZE, test=True, preprocessor=data_generator.preprocessor
     )
 
     model = get_model(

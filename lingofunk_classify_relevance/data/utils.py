@@ -5,6 +5,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from bpemb import BPEmb
 from keras.models import model_from_json
 
 from lingofunk_classify_relevance.config import fetch_constant, fetch_data

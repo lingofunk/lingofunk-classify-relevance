@@ -18,7 +18,7 @@ from keras.layers import (
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 
-from lingofunk_classify_relevance.data.utils import get_embeddings
+from lingofunk_classify_relevance.data.utils import get_embeddings, load_preprocessor
 from lingofunk_classify_relevance.data.data_generator import YELPSequence
 from lingofunk_classify_relevance.model.layers.attention import Attention
 
@@ -26,9 +26,9 @@ np.random.seed(42)
 warnings.filterwarnings("ignore")
 os.environ["OMP_NUM_THREADS"] = "4"
 
-PREPROCESSOR_FILE = os.path.join(MODEL_PATH, "preprocessor_attn.pkl")
-ARCHITECTURE_FILE = os.path.join(MODEL_PATH, "gru_architecture_attn_sub.json")
-WEIGHTS_FILE = os.path.join(MODEL_PATH, "gru_weights_attn_sub.h5")
+PREPROCESSOR_FILE = fetch_model("subattnet", "preprocessor")
+ARCHITECTURE_FILE = fetch_model("subattnet", "architecture")
+WEIGHTS_FILE = fetch_model("subattnet", "weights")
 
 MAX_SEQUENCE_LENGTH = 150
 MAX_NB_WORDS = 100_000
@@ -92,20 +92,7 @@ def train():
     logger = get_logger()
     logger.info(f"Transforming data")
 
-    try:
-        with open(PREPROCESSOR_FILE, "rb") as f:
-            preprocessor = pickle.load(f)
-            data_generator = YELPSequence(
-                batch_size=BATCH_SIZE, test=False, preproc=preprocessor
-            )
-            logger.info("Opened preprocessing file.")
-    except FileNotFoundError:
-        data_generator = YELPSequence(batch_size=BATCH_SIZE, test=False)
-
-    logger.info(f"Saving the text transformer: {PREPROCESSOR_FILE}")
-
-    with open(PREPROCESSOR_FILE, "wb") as file:
-        pickle.dump(data_generator.preprocessor, file)
+    data_generator = YELPSequence(batch_size=BATCH_SIZE, test=False)
 
     word_index = data_generator.preprocessor.tokenizer.word_index
     embedding_matrix = get_embeddings(word_index, MAX_FEATURES, EMBEDDING_DIM)

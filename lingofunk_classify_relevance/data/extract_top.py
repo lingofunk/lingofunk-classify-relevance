@@ -4,9 +4,6 @@ import geojson
 
 from lingofunk_classify_relevance.config import fetch_constant, fetch_data
 
-business_data = open(fetch_data("businesses"), "r", encoding="utf-8")
-reviews_data = open(fetch_data("reviews"), "r", encoding="utf-8")
-
 
 def review_utility(review):
     return review["useful"] + review["funny"] + review["cool"]
@@ -18,6 +15,9 @@ def extract_geojson_and_reviews(
     business_type=fetch_constant("BUSINESS_TYPE"),
     reviews_per_business=fetch_constant("REVIEWS_PER_BUSINESS"),
 ):
+    business_data = open(fetch_data("businesses"), "r", encoding="utf-8")
+    reviews_data = open(fetch_data("reviews"), "r", encoding="utf-8")
+
     output = open(fetch_data("geojson"), "w", encoding="utf-8")
 
     business_ids = set()
@@ -64,7 +64,8 @@ def extract_geojson_and_reviews(
                 business_reviews[business_id] = sorted(
                     business_reviews[business_id], key=review_utility, reverse=True
                 )
-                if review_utility(review) > business_reviews[business_id][-1]:
+                last_review = business_reviews[business_id][-1]
+                if review_utility(review) > review_utility(last_review):
                     business_reviews[business_id][-1] = review
 
     top_reviews = []
@@ -81,8 +82,7 @@ def extract_geojson_and_reviews(
     pd.DataFrame(top_reviews).to_csv(fetch_data("city"), index=False, encoding="utf-8")
 
     output.write(top_businesses)
+
     output.close()
-
-
-business_data.close()
-reviews_data.close()
+    business_data.close()
+    reviews_data.close()

@@ -1,0 +1,2 @@
+from lingofunk_classify_relevance.data.extract_top import extract_geojson_and_reviews
+extract_geojson_and_reviews(reviews_per_business=20)
