@@ -68,7 +68,7 @@ class CityAnalyst:
                 print(i, j, "\t\t", n_ij, finish - start)
                 total_time += finish - start
         out = open(SIMILARITY_MATRIX, "wb")
-        pickle.dump(self.similarity_matrix, out)
+        pickle.dump(similarity_matrix, out)
         print("TIME: ", total_time)
         return similarity_matrix
 
