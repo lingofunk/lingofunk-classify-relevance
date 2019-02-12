@@ -79,8 +79,9 @@ def extract_geojson_and_reviews(
         {"type": "FeatureCollection", "features": list(business.values())}
     )
 
-    pd.DataFrame(top_reviews).to_csv(fetch_data("city"), index=False, encoding="utf-8")
-
+    pd.DataFrame(top_reviews).to_csv(
+        f'{top_count}_{fetch_data("city")}', index=False, encoding="utf-8"
+    )
     output.write(top_businesses)
 
     output.close()

@@ -18,7 +18,7 @@ np.random.seed(42)
 warnings.filterwarnings("ignore")
 os.environ["OMP_NUM_THREADS"] = "4"
 
-PREPROCESSOR_FILE = fetch_model("attnet", "preprocessor")
+PREPROCESSOR_FILE = fetch_model("utils", "preprocessor")
 ARCHITECTURE_FILE = fetch_model("attnet", "architecture")
 WEIGHTS_FILE = fetch_model("attnet", "weights")
 

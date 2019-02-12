@@ -1,24 +1,27 @@
 model:
   dir: "assets/model"
+  utils:
+    preprocessor: "preprocessor.pkl"
   current:
-    name: attnet
+    name: quora
   attsubnet:
     weights: "gru_weights_attn_sub.h5"
-    preprocessor: "preprocessor_attn.pkl"
     architecture: "gru_architecture_attn_sub.json"
   attnet:
     weights: "gru_weights_attn.h5"
-    preprocessor: "preprocessor_attn.pkl"
     architecture: "gru_architecture_attn.json"
+  quora:
+    weights: "weights_quora3.h5"
+    architecture: "architecture_quora3.json"
 
 data:
   dir: "assets/data"
   city: "Toronto_dataset.csv"
   citymatrix: "town_similarity_matrix.pkl"
   geojson: "toronto-top-100-restaurants.geojson"
-  source: "restaurant_reviews_small.csv"
-  train: "reviews_train_small.csv"
-  test: "reviews_test_small.csv"
+  source: "restaurant_reviews.csv"
+  train: "reviews_train.csv"
+  test: "reviews_test.csv"
   businesses: "business.json"
   reviews: "review.json"
 

@@ -55,7 +55,7 @@ DROPOUT = 0.1
 BATCH_SIZE = 128
 OPTIMIZER = "adam"
 
-PREPROCESSOR_FILE = fetch_model("quora", "preprocessor")
+PREPROCESSOR_FILE = fetch_model("utils", "preprocessor")
 ARCHITECTURE_FILE = fetch_model("quora", "architecture")
 WEIGHTS_FILE = fetch_model("quora", "weights")
 
