@@ -21,21 +21,6 @@ WORD_MAX_LEN = fetch_constant("WORD_MAX_LEN")
 np.random.seed(42)
 
 
-class Preprocess:
-    def __init__(self, max_features, maxlen):
-        self.max_features = max_features
-        self.maxlen = maxlen
-        self.tokenizer = text.Tokenizer(num_words=self.max_features)
-
-    def fit_texts(self, list_sentences):
-        self.tokenizer.fit_on_texts(list_sentences)
-
-    def transform_texts(self, list_sentences):
-        # print("TYPE: ", type(list_sentences), type(list_sentences[0]))
-        tokenized_sentences = self.tokenizer.texts_to_sequences(list_sentences)
-        features = sequence.pad_sequences(tokenized_sentences, maxlen=self.maxlen)
-        return features
-
 
 class YELPSequence(Sequence):
     def __init__(self, batch_size=128, test=False, preprocessor=None):

@@ -1,10 +1,12 @@
-from lingofunk_classify_relevance.predict import *
-import time
 import pickle
+import time
+from itertools import product
+
 import numpy as np
 import pandas as pd
-from itertools import product
+
 from lingofunk_classify_relevance.config import fetch_data
+from lingofunk_classify_relevance.predict import ReviewComparer
 
 DATASET_CSV = fetch_data("city")
 SIMILARITY_MATRIX = fetch_data("citymatrix")
