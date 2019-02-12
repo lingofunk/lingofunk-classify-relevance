@@ -62,7 +62,6 @@ Jinja2 = "==2.10"
 Markdown = "==3.0.1"
 PyYAML = "==3.13"
 Werkzeug = "==0.14.1"
-dynaconf = {extras = ["yaml"],version = "*"}
 poyo = "*"
 geojson = "*"
 

@@ -6,7 +6,7 @@ import tensorflow as tf
 from lingofunk_classify_relevance.config import fetch_model
 from lingofunk_classify_relevance.data.utils import load_pipeline_stages
 
-PREPROCESSOR_FILE = fetch_model("current", "preprocessor")
+PREPROCESSOR_FILE = fetch_model("utils", "preprocessor")
 ARCHITECTURE_FILE = fetch_model("current", "architecture")
 WEIGHTS_FILE = fetch_model("current", "weights")
 

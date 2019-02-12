@@ -70,7 +70,7 @@ class YELPSequence(Sequence):
 
     def __init_preprocessor(self, preprocessor):
         if not self.test and not preprocessor:
-            return load_preprocessor(fetch_model("current", "preprocessor"))
+            return load_preprocessor(fetch_model("utils", "preprocessor"))
         return preprocessor
 
     @staticmethod
