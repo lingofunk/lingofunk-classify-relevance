@@ -63,6 +63,7 @@ Markdown = "==3.0.1"
 PyYAML = "==3.13"
 Werkzeug = "==0.14.1"
 geojson = "*"
+poyo = "*"
 
 [requires]
 python_version = "3.6"
