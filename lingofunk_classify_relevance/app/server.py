@@ -27,7 +27,7 @@ class Server:
             similarity = self._city_analyst.comparer.answer_query(
                 reviews[0], reviews[1]
             )
-            return jsonify(text=str(similarity))
+            return jsonify(score=str(similarity))
         else:
             return Response(status=501)
 

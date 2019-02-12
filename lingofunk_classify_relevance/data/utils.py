@@ -7,9 +7,20 @@ import pandas as pd
 from bpemb import BPEmb
 from keras.models import model_from_json
 from keras.preprocessing import sequence, text
+from sklearn.model_selection import train_test_split
 
 from lingofunk_classify_relevance.config import fetch_constant, fetch_data
 from lingofunk_classify_relevance.model.layers.attention import Attention
+
+
+def split_data(test_size=0.25):
+    data = pd.read_csv(fetch_data("source"))
+    data_train, data_test = train_test_split(data, random_state=42, test_size=test_size)
+    del data
+    data_train.to_csv(fetch_data("train"))
+    data_test.to_csv(fetch_data("test"))
+    del data_train, data_test
+
 
 class Preprocess:
     def __init__(self, max_features, maxlen):
@@ -76,23 +87,25 @@ def load_model(architecture_file, weights_file):
 
 
 def load_preprocessor(preprocessor_file, logger=get_logger()):
-    VOCAB_MAX_FEATURES = fetch_constant("VOCAB_MAX_FEATURES")
-    WORD_MAX_LEN = fetch_constant("WORD_MAX_LEN")
-    PATH_TO_YELP_CSV_TRAIN = fetch_data("train")
-
-    try:
+    if Path(preprocessor_file).is_file():
         with open(preprocessor_file, "rb") as f:
             preprocessor = pickle.load(f)
             logger.info("Opened preprocessing file.")
             return preprocessor
-    except FileNotFoundError:
+    else:
+        if not Path(fetch_data("train")).is_file():
+            split_data()
+
         text = (
-            pd.read_csv(PATH_TO_YELP_CSV_TRAIN)
+            pd.read_csv(fetch_data("train"))
             .groupby(["business_id"])
             .agg({"text": list})["text"]
             .values
         )
-        preprocessor = Preprocess(max_features=VOCAB_MAX_FEATURES, maxlen=WORD_MAX_LEN)
+        preprocessor = Preprocess(
+            max_features=fetch_constant("VOCAB_MAX_FEATURES"),
+            maxlen=fetch_constant("WORD_MAX_LEN"),
+        )
         for i in range(0, len(text), 5000):
             high = min(i + 5000, len(text))
             all_texts = sum(text[i:high], [])

@@ -70,3 +70,8 @@ python_version = "3.6"
 
 [pipenv]
 allow_prereleases = true
+
+[scripts]
+server = """
+bash -c "PYTHONPATH=. python -m lingofunk_classify_relevance.app.server --port 8000"
+"""

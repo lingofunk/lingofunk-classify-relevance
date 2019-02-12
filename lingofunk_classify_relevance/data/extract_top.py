@@ -15,15 +15,14 @@ def extract_geojson_and_reviews(
     business_type=fetch_constant("BUSINESS_TYPE"),
     reviews_per_business=fetch_constant("REVIEWS_PER_BUSINESS"),
 ):
-    business_data = open(fetch_data("businesses"), "r", encoding="utf-8")
-    reviews_data = open(fetch_data("reviews"), "r", encoding="utf-8")
-
-    output = open(fetch_data("geojson"), "w", encoding="utf-8")
 
     business_ids = set()
     business = dict()
     business_review_counts = dict()
     business_reviews = dict()
+
+    business_data = open(fetch_data("businesses"), "r", encoding="utf-8")
+    reviews_data = open(fetch_data("reviews"), "r", encoding="utf-8")
 
     for business_json in business_data:
         info = json.JSONDecoder().decode(business_json)
@@ -51,6 +50,7 @@ def extract_geojson_and_reviews(
         business_id = business_review_counts[idx][0]
         business_ids.add(business_id)
         business_reviews[business_id] = []
+    business_data.close()
 
     business = {business_id: business[business_id] for business_id in business_ids}
 
@@ -67,6 +67,7 @@ def extract_geojson_and_reviews(
                 last_review = business_reviews[business_id][-1]
                 if review_utility(review) > review_utility(last_review):
                     business_reviews[business_id][-1] = review
+    reviews_data.close()
 
     top_reviews = []
     for business_id in business_reviews.keys():
@@ -78,12 +79,10 @@ def extract_geojson_and_reviews(
     top_businesses = geojson.GeoJSONEncoder().encode(
         {"type": "FeatureCollection", "features": list(business.values())}
     )
+    print(business.values())
 
-    pd.DataFrame(top_reviews).to_csv(
-        f'{top_count}_{fetch_data("city")}', index=False, encoding="utf-8"
-    )
+    pd.DataFrame(top_reviews).to_csv(fetch_data("city"), index=False, encoding="utf-8")
+
+    output = open(fetch_data("geojson"), "w", encoding="utf-8")
     output.write(top_businesses)
-
     output.close()
-    business_data.close()
-    reviews_data.close()
