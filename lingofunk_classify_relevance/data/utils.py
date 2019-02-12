@@ -1,7 +1,7 @@
 import logging
-import os
 import pickle
 from pathlib import Path
+from bpemb import BPEmb
 
 from keras.models import model_from_json
 
@@ -74,7 +74,6 @@ def load_preprocessor(preprocessor_file, logger=get_logger()):
         logger.info(f"Saving the text transformer: {preprocessor_file}")
 
         return yelp_dataset_generator.preprocessor
-    return None
 
 
 def load_pipeline_stages(preprocessor_file, architecture_file, weights_file):

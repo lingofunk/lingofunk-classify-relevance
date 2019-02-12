@@ -14,6 +14,7 @@ model:
 data:
   dir: "assets/data"
   city: "Toronto_dataset.csv"
+  citymatrix: "town_similarity_matrix.pkl"
   geojson: "toronto-top-100-restaurants.geojson"
   source: "restaurant_reviews.csv"
   train: "reviews_train.csv"
